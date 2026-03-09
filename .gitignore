@@ -1,0 +1,16 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# User files
+*.user
+*.suo
+
+# Build files
+*.dll
+*.exe
+
+# IDE
+.vscode/
+.idea/
