@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -67,7 +67,7 @@ public class LoginWindowVM : BaseViewModel
             return;
         }
 
-        if (user.Status == "Locked")
+        if (user.Status == false)
         {
             errormessage = "This account is locked.";
             return;
@@ -99,3 +99,4 @@ public class LoginWindowVM : BaseViewModel
         loginWindow?.Close();
     }
 }
+

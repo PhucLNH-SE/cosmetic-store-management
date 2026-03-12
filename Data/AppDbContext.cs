@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using CosmeticStoreManagement.Models;
@@ -85,7 +85,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.Status).HasDefaultValue(true);
 
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
@@ -271,7 +271,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.FullName).HasMaxLength(100);
             entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.Role).HasMaxLength(20);
-            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.Status).HasDefaultValue(true);
             entity.Property(e => e.Username).HasMaxLength(50);
         });
 
@@ -294,3 +294,4 @@ public partial class AppDbContext : DbContext
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }
+
