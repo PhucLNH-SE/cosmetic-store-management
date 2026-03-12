@@ -195,7 +195,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
 
                     string finalDisplayPath = string.Empty;
 
-                    // KIỂM TRA ĐƯỜNG DẪN: Ưu tiên ảnh mới lưu trong DB, nếu không có thì xài autoPath của 100 tấm cũ
+                   
                     if (File.Exists(dbPath))
                         finalDisplayPath = dbPath;
                     else if (File.Exists(autoPath))
@@ -243,12 +243,12 @@ namespace CosmeticStoreManagement.ViewModels.admin
             OpenFileDialog op = new OpenFileDialog { Filter = "Images|*.png;*.jpg;*.jpeg" };
             if (op.ShowDialog() == true)
             {
-                // Chỉ lấy đường dẫn hiện lên UI, chưa vội copy khóa file
+               
                 textboxitem.ImagePath = op.FileName;
             }
         }
 
-        // --- HÀM XỬ LÝ ẢNH TRÁNH LỖI WPF KHÓA FILE ---
+       
         private string SaveImageSafely(string sourcePath, int productId)
         {
             if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath)) return string.Empty;
@@ -265,7 +265,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                 string ext = Path.GetExtension(sourcePath);
                 if (string.IsNullOrEmpty(ext)) ext = ".png";
 
-                // Thêm Ticks để tên file luôn duy nhất (Tránh 100% vụ khóa file trùng tên)
+               
                 string fileName = $"prod_{productId}_{DateTime.Now.Ticks}{ext}";
                 string destPath = Path.Combine(destFolder, fileName);
 
@@ -307,7 +307,6 @@ namespace CosmeticStoreManagement.ViewModels.admin
                     context.Products.Add(newP);
                     context.SaveChanges();
 
-                    // Xử lý lưu ảnh an toàn
                     string safeImagePath = SaveImageSafely(textboxitem.ImagePath, newP.ProductId);
 
                     var newV = new ProductVariant
