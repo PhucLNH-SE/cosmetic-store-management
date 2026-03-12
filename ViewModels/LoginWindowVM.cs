@@ -40,7 +40,7 @@ public class LoginWindowVM : BaseViewModel
         }
     }
 
-    private void Login(object obj)
+    private void Login(object? obj)
     {
         var passwordBox = obj as PasswordBox;
         var password = passwordBox?.Password ?? string.Empty;
@@ -67,7 +67,7 @@ public class LoginWindowVM : BaseViewModel
             return;
         }
 
-        if (user.Status == "Locked")
+        if (user.Status == false)
         {
             errormessage = "This account is locked.";
             return;
@@ -90,12 +90,16 @@ public class LoginWindowVM : BaseViewModel
             return;
         }
 
-        nextWindow.Show();
-
         Window? loginWindow = Application.Current.Windows
             .OfType<LoginWindow>()
             .FirstOrDefault();
 
+        if (loginWindow != null)
+        {
+            WindowStateHelper.ApplyFrom(loginWindow, nextWindow);
+        }
+
+        nextWindow.Show();
         loginWindow?.Close();
     }
 }
