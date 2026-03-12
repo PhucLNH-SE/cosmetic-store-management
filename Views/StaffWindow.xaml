@@ -6,14 +6,48 @@
         xmlns:helpers="clr-namespace:CosmeticStoreManagement.Helpers"
         mc:Ignorable="d"
         Title="Staff"
-        Height="593"
-        Width="980"
-        MinHeight="520"
-        MinWidth="900"
+        Height="700"
+        Width="1200"
+        MinHeight="600"
+        MinWidth="1000"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         Background="#FFF1F6F1">
     <Window.Resources>
+        <!-- Button Style for Menu -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF4A7C5E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Active Menu Button Style -->
+        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Background" Value="#FF5D9B68"/>
+        </Style>
+
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="Bold"/>
@@ -35,157 +69,93 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-        <Border Background="#FF3E6B48" Padding="18">
-            <DockPanel>
-                <StackPanel DockPanel.Dock="Left">
-                    <TextBlock Text="Staff Dashboard"
-                               Foreground="White"
-                               FontSize="24"
-                               FontWeight="Bold"/>
-                    <TextBlock Text="{Binding Source={x:Static helpers:UserSession.CurrentUser}, Path=FullName, StringFormat='Welcome, {0}'}"
-                               Foreground="#FFE8F3E8"
-                               FontSize="14"
-                               Margin="0,4,0,0"/>
+        <!-- SIDEBAR MENU -->
+        <Border Grid.Column="0" Background="#FF3E6B48">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Logo/Title -->
+                <Border Grid.Row="0" Padding="20,24">
+                    <StackPanel>
+                        <TextBlock Text="🧴 Cosmetic Store"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Foreground="White"/>
+                        <TextBlock Text="Staff Panel"
+                                   FontSize="12"
+                                   Foreground="#FFB8D4BE"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Menu Items -->
+                <StackPanel Grid.Row="1" Margin="0,20,0,0">
+                    <Button Content="🛒  Products" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Products_Click"/>
+                    <Button Content="🛍️  Cart" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Cart_Click"/>
+                    <Button Content="👥  Customer" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Customer_Click"/>
+                    <Button Content="🎟️  Voucher" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Voucher_Click"/>
+                    <Button Content="💳  Payment" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Payment_Click"/>
+                    <Button Content="📦  Order" 
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Order_Click"/>
                 </StackPanel>
 
-                <Button Content="Logout"
-                        Width="110"
-                        Height="38"
-                        Background="#FF5D9B68"
-                        Style="{StaticResource RoundedButtonStyle}"
-                        HorizontalAlignment="Right"
-                        DockPanel.Dock="Right"
-                        Click="Logout_Click"/>
-            </DockPanel>
+                <!-- Logout -->
+                <Border Grid.Row="2" Padding="16,16">
+                    <Button Content="Logout"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Background="#FF5D9B68"
+                            Click="Logout_Click"/>
+                </Border>
+            </Grid>
         </Border>
 
-        <Grid Grid.Row="1" Margin="24">
+        <!-- MAIN CONTENT AREA -->
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.1*"/>
-                <ColumnDefinition Width="0.9*"/>
-            </Grid.ColumnDefinitions>
 
-            <Border Grid.Row="0"
-                    Grid.ColumnSpan="2"
-                    Background="White"
-                    CornerRadius="22"
-                    Padding="26"
-                    BorderBrush="#FFD8E6DA"
-                    BorderThickness="1"
-                    Margin="0,0,0,20">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel>
-                        <TextBlock Text="Khu vực nhân viên bán hàng"
-                                   FontSize="28"
-                                   FontWeight="Bold"
-                                   Foreground="#FF244330"/>
-                        <TextBlock Text="Màn hình này sẽ là nơi tạo giỏ hàng, tạo đơn và phục vụ khách hàng tại quầy."
-                                   Margin="0,10,0,0"
-                                   FontSize="15"
-                                   Foreground="#FF5F7B67"
-                                   TextWrapping="Wrap"/>
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#FF3E6B48" Padding="24,16">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Left">
+                        <TextBlock Text="Staff Dashboard"
+                                   Foreground="White"
+                                   FontSize="22"
+                                   FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Source={x:Static helpers:UserSession.CurrentUser}, Path=FullName, StringFormat='Welcome, {0}'}"
+                                   Foreground="#FFE8F3E8"
+                                   FontSize="13"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
-
-                    <Border Grid.Column="1"
-                            Padding="16,10"
-                            Background="#FFE7F3E8"
-                            CornerRadius="16"
-                            VerticalAlignment="Center">
-                        <TextBlock Text="Role: Staff"
-                                   FontSize="14"
-                                   FontWeight="Bold"
-                                   Foreground="#FF3E6B48"/>
-                    </Border>
-                </Grid>
+                </DockPanel>
             </Border>
 
-            <Border Grid.Row="1"
-                    Grid.Column="0"
-                    Background="#FFD1E7D5"
-                    CornerRadius="24"
-                    Padding="28"
-                    Margin="0,0,20,0">
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Staff area"
-                               FontSize="34"
-                               FontWeight="Bold"
-                               Foreground="#FF244330"/>
-                    <TextBlock Text="Menu nghiệp vụ staff sẽ được đưa vào đây theo style Frame + Page giống mẫu của thầy."
-                               Margin="0,14,0,0"
-                               FontSize="16"
-                               Foreground="#FF4B6652"
-                               TextWrapping="Wrap"/>
-                </StackPanel>
-            </Border>
-
-            <StackPanel Grid.Row="1" Grid.Column="1">
-                <Border Background="White"
-                        CornerRadius="20"
-                        BorderBrush="#FFD8E6DA"
-                        BorderThickness="1"
-                        Padding="20"
-                        Margin="0,0,0,16">
-                    <StackPanel>
-                        <TextBlock Text="Cart"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="#FF244330"/>
-                        <TextBlock Text="Thêm sản phẩm vào giỏ, chỉnh số lượng và giá bán."
-                                   Margin="0,8,0,0"
-                                   Foreground="#FF68816F"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="White"
-                        CornerRadius="20"
-                        BorderBrush="#FFD8E6DA"
-                        BorderThickness="1"
-                        Padding="20"
-                        Margin="0,0,0,16">
-                    <StackPanel>
-                        <TextBlock Text="Orders"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="#FF244330"/>
-                        <TextBlock Text="Tạo hóa đơn, áp voucher và hoàn tất thanh toán."
-                                   Margin="0,8,0,0"
-                                   Foreground="#FF68816F"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-
-                <Border Background="White"
-                        CornerRadius="20"
-                        BorderBrush="#FFD8E6DA"
-                        BorderThickness="1"
-                        Padding="20">
-                    <StackPanel>
-                        <TextBlock Text="Customers"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   Foreground="#FF244330"/>
-                        <TextBlock Text="Tìm kiếm khách hàng cũ hoặc tạo khách hàng mới khi bán."
-                                   Margin="0,8,0,0"
-                                   Foreground="#FF68816F"
-                                   TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
+            <!-- Frame for Pages -->
+            <Frame x:Name="mainFrame" Grid.Row="1" 
+                   NavigationUIVisibility="Hidden"
+                   Background="#FFF1F6F1"/>
         </Grid>
     </Grid>
 </Window>
