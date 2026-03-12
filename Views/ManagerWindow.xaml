@@ -75,10 +75,10 @@
                                Foreground="White"
                                FontSize="24"
                                FontWeight="Bold"/>
-                    <TextBlock Text="Welcome Manager"
-           Foreground="#FFF8EDE3"
-           FontSize="14"
-           Margin="0,4,0,0"/>
+                    <TextBlock Text="{Binding Source={x:Static helpers:UserSession.CurrentUser}, Path=FullName, StringFormat='Welcome, {0}'}"
+                               Foreground="#FFF8EDE3"
+                               FontSize="14"
+                               Margin="0,4,0,0"/>
                 </StackPanel>
 
                 <Button Content="Logout"
