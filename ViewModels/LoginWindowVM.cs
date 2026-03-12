@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -103,3 +103,4 @@ public class LoginWindowVM : BaseViewModel
         loginWindow?.Close();
     }
 }
+

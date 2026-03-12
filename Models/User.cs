@@ -39,3 +39,4 @@ public partial class User : ICloneable
         };
     }
 }
+
