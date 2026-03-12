@@ -1,6 +1,7 @@
 ﻿using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -58,6 +59,7 @@ namespace CosmeticStoreManagement.ViewModels
         public RelayCommand AddCommand { get; set; }
         public RelayCommand UpdateCommand { get; set; }
         public RelayCommand DeleteCommand { get; set; }
+        public RelayCommand ClearCommand { get; set; }
 
         public ManageVoucherVM()
         {
@@ -77,6 +79,11 @@ namespace CosmeticStoreManagement.ViewModels
                 p => DeleteVoucher(),
                 p => selecteditem != null
             );
+
+            ClearCommand = new RelayCommand(
+                p => ClearForm(),
+                p => true
+            );
         }
 
         void Load()
@@ -87,18 +94,11 @@ namespace CosmeticStoreManagement.ViewModels
 
             voucherView = CollectionViewSource.GetDefaultView(vouchers);
 
-            OnPropertyChanged(nameof(vouchers));
             OnPropertyChanged(nameof(voucherView));
         }
 
         void AddVoucher()
         {
-            if (string.IsNullOrEmpty(textboxitem.VoucherCode))
-            {
-                MessageBox.Show("Voucher code is required");
-                return;
-            }
-
             if (!ValidateVoucher())
                 return;
 
@@ -109,7 +109,7 @@ namespace CosmeticStoreManagement.ViewModels
                 DiscountValue = textboxitem.DiscountValue,
                 StartDate = textboxitem.StartDate,
                 EndDate = textboxitem.EndDate,
-                IsActive = true
+                IsActive = textboxitem.IsActive
             };
 
             context.Vouchers.Add(v);
@@ -117,8 +117,7 @@ namespace CosmeticStoreManagement.ViewModels
 
             vouchers.Add(v);
 
-            textboxitem = new Voucher();
-            OnPropertyChanged(nameof(textboxitem));
+            ClearForm();
         }
 
         void UpdateVoucher()
@@ -131,6 +130,8 @@ namespace CosmeticStoreManagement.ViewModels
 
             if (voucher != null)
             {
+                voucher.VoucherCode = textboxitem.VoucherCode;
+                voucher.DiscountType = textboxitem.DiscountType;
                 voucher.DiscountValue = textboxitem.DiscountValue;
                 voucher.StartDate = textboxitem.StartDate;
                 voucher.EndDate = textboxitem.EndDate;
@@ -138,6 +139,8 @@ namespace CosmeticStoreManagement.ViewModels
 
                 context.SaveChanges();
 
+                selecteditem.VoucherCode = textboxitem.VoucherCode;
+                selecteditem.DiscountType = textboxitem.DiscountType;
                 selecteditem.DiscountValue = textboxitem.DiscountValue;
                 selecteditem.StartDate = textboxitem.StartDate;
                 selecteditem.EndDate = textboxitem.EndDate;
@@ -167,13 +170,27 @@ namespace CosmeticStoreManagement.ViewModels
 
                     vouchers.Remove(selecteditem);
 
-                    textboxitem = new Voucher();
-                    OnPropertyChanged(nameof(textboxitem));
+                    ClearForm();
                 }
             }
         }
+
+        void ClearForm()
+        {
+            textboxitem = new Voucher();
+            selecteditem = null;
+
+            OnPropertyChanged(nameof(textboxitem));
+        }
+
         bool ValidateVoucher()
         {
+            if (string.IsNullOrWhiteSpace(textboxitem.VoucherCode))
+            {
+                MessageBox.Show("Voucher code is required.");
+                return false;
+            }
+
             if (context.Vouchers.Any(v => v.VoucherCode == textboxitem.VoucherCode
                 && v.VoucherId != textboxitem.VoucherId))
             {
@@ -181,9 +198,9 @@ namespace CosmeticStoreManagement.ViewModels
                 return false;
             }
 
-            if (textboxitem.DiscountValue == null || textboxitem.DiscountValue <= 0)
+            if (textboxitem.DiscountValue <= 0)
             {
-                MessageBox.Show("Discount value must be a positive number.");
+                MessageBox.Show("Discount value must be positive.");
                 return false;
             }
 
@@ -199,6 +216,20 @@ namespace CosmeticStoreManagement.ViewModels
             if (textboxitem.StartDate == null || textboxitem.EndDate == null)
             {
                 MessageBox.Show("Start date and end date are required.");
+                return false;
+            }
+
+            DateTime today = DateTime.Today;
+
+            if (textboxitem.StartDate < today)
+            {
+                MessageBox.Show("Start date must be today or later.");
+                return false;
+            }
+
+            if (textboxitem.EndDate < today)
+            {
+                MessageBox.Show("End date must be today or later.");
                 return false;
             }
 

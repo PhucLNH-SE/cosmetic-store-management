@@ -10,4 +10,9 @@ public partial class ManageVoucherPage : Page
         InitializeComponent();
         DataContext = new ManageVoucherVM();
     }
+
+    private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+
+    }
 }
