@@ -15,7 +15,9 @@ public partial class ManagerWindow : Window
     private void Logout_Click(object sender, RoutedEventArgs e)
     {
         UserSession.Clear();
-        new LoginWindow().Show();
+        var loginWindow = new LoginWindow();
+        WindowStateHelper.ApplyFrom(this, loginWindow);
+        loginWindow.Show();
         Close();
     }
 

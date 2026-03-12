@@ -15,7 +15,7 @@ public partial class User : ICloneable
 
     public string? Role { get; set; }
 
-    public string? Status { get; set; }
+    public bool? Status { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
