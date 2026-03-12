@@ -1,11 +1,15 @@
+﻿using CosmeticStoreManagement.ViewModels;
+using CosmeticStoreManagement.ViewModels.admin;
 using System.Windows.Controls;
 
-namespace CosmeticStoreManagement.Views.Admin;
-
-public partial class ManageProductPage : Page
+namespace CosmeticStoreManagement.Views
 {
-    public ManageProductPage()
+    public partial class ManageProductPage : Page
     {
-        InitializeComponent();
+        public ManageProductPage()
+        {
+            InitializeComponent();
+            this.DataContext = new ManageProductPageVM();
+        }
     }
 }
