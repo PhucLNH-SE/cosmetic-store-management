@@ -99,6 +99,11 @@ namespace CosmeticStoreManagement.ViewModels
 
         void AddVoucher()
         {
+            if (selecteditem != null)
+            {
+                MessageBox.Show("Please clear the form before adding a new voucher.");
+                return;
+            }
             if (!ValidateVoucher())
                 return;
 
