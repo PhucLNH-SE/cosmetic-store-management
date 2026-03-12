@@ -1,0 +1,26 @@
+<Page x:Class="CosmeticStoreManagement.Views.Admin.ManageProductPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Title="ManageProductPage">
+    <Grid Background="#FFF9F6F2">
+        <Border Background="#FFF3E8DE"
+                CornerRadius="24"
+                Padding="28"
+                Margin="8">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="Manage Product"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="#FF4A2E1E"/>
+                <TextBlock Text="Product management page placeholder. Product and variant CRUD can be attached here later."
+                           Margin="0,14,0,0"
+                           FontSize="16"
+                           Foreground="#FF6F5547"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>

@@ -1,0 +1,191 @@
+<Window x:Class="CosmeticStoreManagement.Views.StaffWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:helpers="clr-namespace:CosmeticStoreManagement.Helpers"
+        mc:Ignorable="d"
+        Title="Staff"
+        Height="593"
+        Width="980"
+        MinHeight="520"
+        MinWidth="900"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF1F6F1">
+    <Window.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="#FF3E6B48" Padding="18">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="Staff Dashboard"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Source={x:Static helpers:UserSession.CurrentUser}, Path=FullName, StringFormat='Welcome, {0}'}"
+                               Foreground="#FFE8F3E8"
+                               FontSize="14"
+                               Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <Button Content="Logout"
+                        Width="110"
+                        Height="38"
+                        Background="#FF5D9B68"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        HorizontalAlignment="Right"
+                        DockPanel.Dock="Right"
+                        Click="Logout_Click"/>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*"/>
+                <ColumnDefinition Width="0.9*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    Background="White"
+                    CornerRadius="22"
+                    Padding="26"
+                    BorderBrush="#FFD8E6DA"
+                    BorderThickness="1"
+                    Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Khu vực nhân viên bán hàng"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#FF244330"/>
+                        <TextBlock Text="Màn hình này sẽ là nơi tạo giỏ hàng, tạo đơn và phục vụ khách hàng tại quầy."
+                                   Margin="0,10,0,0"
+                                   FontSize="15"
+                                   Foreground="#FF5F7B67"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Padding="16,10"
+                            Background="#FFE7F3E8"
+                            CornerRadius="16"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="Role: Staff"
+                                   FontSize="14"
+                                   FontWeight="Bold"
+                                   Foreground="#FF3E6B48"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Grid.Column="0"
+                    Background="#FFD1E7D5"
+                    CornerRadius="24"
+                    Padding="28"
+                    Margin="0,0,20,0">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Staff area"
+                               FontSize="34"
+                               FontWeight="Bold"
+                               Foreground="#FF244330"/>
+                    <TextBlock Text="Menu nghiệp vụ staff sẽ được đưa vào đây theo style Frame + Page giống mẫu của thầy."
+                               Margin="0,14,0,0"
+                               FontSize="16"
+                               Foreground="#FF4B6652"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Border Background="White"
+                        CornerRadius="20"
+                        BorderBrush="#FFD8E6DA"
+                        BorderThickness="1"
+                        Padding="20"
+                        Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Cart"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#FF244330"/>
+                        <TextBlock Text="Thêm sản phẩm vào giỏ, chỉnh số lượng và giá bán."
+                                   Margin="0,8,0,0"
+                                   Foreground="#FF68816F"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White"
+                        CornerRadius="20"
+                        BorderBrush="#FFD8E6DA"
+                        BorderThickness="1"
+                        Padding="20"
+                        Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Orders"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#FF244330"/>
+                        <TextBlock Text="Tạo hóa đơn, áp voucher và hoàn tất thanh toán."
+                                   Margin="0,8,0,0"
+                                   Foreground="#FF68816F"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White"
+                        CornerRadius="20"
+                        BorderBrush="#FFD8E6DA"
+                        BorderThickness="1"
+                        Padding="20">
+                    <StackPanel>
+                        <TextBlock Text="Customers"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="#FF244330"/>
+                        <TextBlock Text="Tìm kiếm khách hàng cũ hoặc tạo khách hàng mới khi bán."
+                                   Margin="0,8,0,0"
+                                   Foreground="#FF68816F"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

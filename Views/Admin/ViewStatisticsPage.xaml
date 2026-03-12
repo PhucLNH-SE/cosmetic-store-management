@@ -1,0 +1,26 @@
+<Page x:Class="CosmeticStoreManagement.Views.Admin.ViewStatisticsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Title="ViewStatisticsPage">
+    <Grid Background="#FFF9F6F2">
+        <Border Background="#FFF3E4D7"
+                CornerRadius="24"
+                Padding="28"
+                Margin="8">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="View statistics"
+                           FontSize="30"
+                           FontWeight="Bold"
+                           Foreground="#FF4A2E1E"/>
+                <TextBlock Text="Statistics dashboard UI placeholder. Charts, summary cards, and business numbers will be added here later."
+                           Margin="0,14,0,0"
+                           FontSize="16"
+                           Foreground="#FF6F5547"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Page>
