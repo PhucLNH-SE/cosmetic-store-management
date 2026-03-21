@@ -73,34 +73,42 @@ public class LoginWindowVM : BaseViewModel
             return;
         }
 
-        UserSession.CurrentUser = user;
-        errormessage = string.Empty;
-
-        Window? nextWindow = user.Role switch
+        try
         {
-            "Manager" => new ManagerWindow(),
-            "Staff" => new StaffWindow(),
-            _ => null
-        };
+            UserSession.CurrentUser = user;
+            errormessage = string.Empty;
 
-        if (nextWindow == null)
+            Window? nextWindow = user.Role switch
+            {
+                "Manager" => new ManagerWindow(),
+                "Staff" => new StaffWindow(),
+                _ => null
+            };
+
+            if (nextWindow == null)
+            {
+                UserSession.Clear();
+                errormessage = "Access denied.";
+                return;
+            }
+
+            Window? loginWindow = Application.Current.Windows
+                .OfType<LoginWindow>()
+                .FirstOrDefault();
+
+            if (loginWindow != null)
+            {
+                WindowStateHelper.ApplyFrom(loginWindow, nextWindow);
+            }
+
+            nextWindow.Show();
+            loginWindow?.Close();
+        }
+        catch (Exception ex)
         {
             UserSession.Clear();
-            errormessage = "Access denied.";
-            return;
+            errormessage = $"Unable to open {user.Role} screen: {ex.Message}";
         }
-
-        Window? loginWindow = Application.Current.Windows
-            .OfType<LoginWindow>()
-            .FirstOrDefault();
-
-        if (loginWindow != null)
-        {
-            WindowStateHelper.ApplyFrom(loginWindow, nextWindow);
-        }
-
-        nextWindow.Show();
-        loginWindow?.Close();
     }
 }
 

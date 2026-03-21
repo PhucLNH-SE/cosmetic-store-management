@@ -50,6 +50,35 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
+        <Style x:Key="CustomerResultItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="itemBorder"
+                                Background="#FFF8FBF9"
+                                BorderBrush="#FFE1ECE3"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="10,8">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="itemBorder" Property="Background" Value="#FFF0F6F1"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="itemBorder" Property="Background" Value="#FFE7F2E9"/>
+                                <Setter TargetName="itemBorder" Property="BorderBrush" Value="#FFBFD6C5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FF3E6B48"/>
             <Setter Property="Foreground" Value="White"/>
@@ -141,7 +170,7 @@
             <StackPanel>
                 <TextBlock Text="Counter Sales"
                            Style="{StaticResource SectionTitleStyle}"/>
-                <TextBlock Text="Add product variants to the cart, update quantities, and checkout directly from the staff panel."
+                <TextBlock Text="Choose the buyer, add product variants to the cart, update quantities, and checkout directly from the staff panel."
                            Margin="0,6,0,18"
                            Foreground="#FF6B7F70"
                            TextWrapping="Wrap"/>
@@ -182,6 +211,111 @@
                             Margin="0,0,0,12"
                             Click="ClearFilters_Click"/>
                 </WrapPanel>
+
+                <Border Background="#FFF7FAF7"
+                        CornerRadius="12"
+                        Padding="14"
+                        BorderBrush="#FFDCE8DE"
+                        BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.35*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Buyer"
+                                       Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBlock Text="Type the customer name, then click the result below."
+                                       Margin="0,0,0,10"
+                                       Foreground="#FF708172"
+                                       TextWrapping="Wrap"/>
+                            <Grid>
+                                <TextBox x:Name="BuyerSearchTextBox"
+                                         Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                         Style="{StaticResource SearchTextBoxStyle}"
+                                         MinWidth="0"/>
+
+                                <Popup PlacementTarget="{Binding ElementName=BuyerSearchTextBox}"
+                                       Placement="Bottom"
+                                       VerticalOffset="6"
+                                       AllowsTransparency="True"
+                                       PopupAnimation="Fade"
+                                       StaysOpen="False"
+                                       IsOpen="{Binding ShowCustomerSuggestions}">
+                                    <Border Width="{Binding ActualWidth, ElementName=BuyerSearchTextBox}"
+                                            Background="White"
+                                            BorderBrush="#FFD9E4DB"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Padding="8">
+                                        <Grid>
+                                            <ListBox ItemsSource="{Binding CustomerOptionsView}"
+                                                     SelectedItem="{Binding SelectedCustomer}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     MaxHeight="220"
+                                                     ItemContainerStyle="{StaticResource CustomerResultItemStyle}"
+                                                     Visibility="{Binding HasCustomerResults, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding CustomerName}"
+                                                                       FontWeight="SemiBold"
+                                                                       Foreground="#FF244330"/>
+                                                            <TextBlock Text="{Binding Phone, StringFormat='Phone: {0}'}"
+                                                                       Margin="0,4,0,0"
+                                                                       FontSize="12"
+                                                                       Foreground="#FF708172"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+
+                                            <TextBlock Text="No customer matches this search."
+                                                       Padding="8"
+                                                       Foreground="#FF8B6A2E"
+                                                       Visibility="{Binding ShowCustomerNoResults, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        </Grid>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </StackPanel>
+
+                        <Border Grid.Column="2"
+                                Background="#FFEAF4EC"
+                                CornerRadius="10"
+                                Padding="12">
+                            <Grid>
+                                <Grid Visibility="{Binding HasSelectedCustomer, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="Selected Customer"
+                                                   FontSize="12"
+                                                   FontWeight="Bold"
+                                                   Foreground="#FF305239"/>
+                                        <TextBlock Text="{Binding SelectedCustomerName}"
+                                                   Margin="0,4,0,0"
+                                                   FontWeight="Bold"
+                                                   Foreground="#FF244330"
+                                                   TextWrapping="Wrap"/>
+                                        <TextBlock Text="{Binding SelectedCustomerPhone}"
+                                                   Margin="0,4,0,0"
+                                                   Foreground="#FF5F7462"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Visibility="{Binding HasSelectedCustomer, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <TextBlock Text="Please choose a customer before checkout."
+                                               VerticalAlignment="Center"
+                                               Foreground="#FF8B6A2E"
+                                               TextWrapping="Wrap"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
             </StackPanel>
         </Border>
 
@@ -306,19 +440,15 @@
                     <StackPanel Grid.Row="0">
                         <TextBlock Text="Current Cart"
                                    Style="{StaticResource SectionTitleStyle}"/>
-                        <TextBlock Text="Checkout saves a walk-in order for the current staff account."
-                                   Margin="0,6,0,14"
+                        <TextBlock Text="Review selected items, update quantities, and checkout."
+                                   Margin="0,6,0,12"
                                    Foreground="#FF6B7F70"
                                    TextWrapping="Wrap"/>
 
-                        <Border Background="#FFF4F8F5"
-                                CornerRadius="12"
-                                Padding="14"
-                                Margin="0,0,0,14">
-                            <TextBlock Text="Use the Add button in the product table to add variants here. You can increase, decrease, or remove each line before checkout."
-                                       Foreground="#FF607563"
-                                       TextWrapping="Wrap"/>
-                        </Border>
+                        <TextBlock Text="Add items from the product table, then adjust quantity or remove lines here."
+                                   Margin="0,0,0,10"
+                                   Foreground="#FF607563"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
@@ -462,7 +592,7 @@
                             <Button Content="Checkout"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Command="{Binding CheckoutCommand}"
-                                    IsEnabled="{Binding HasCartItems}"
+                                    IsEnabled="{Binding CanCheckout}"
                                     Height="42"/>
                         </StackPanel>
                     </Border>
