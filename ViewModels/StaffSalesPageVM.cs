@@ -457,6 +457,7 @@ public class StaffSalesPageVM : BaseViewModel
                     VariantId = line.VariantId,
                     Quantity = line.Quantity,
                     UnitPrice = line.UnitPrice,
+                    ImportPrice = line.UnitPrice,
                     Subtotal = line.LineTotal
                 });
             }

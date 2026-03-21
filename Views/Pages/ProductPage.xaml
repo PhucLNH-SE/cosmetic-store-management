@@ -466,7 +466,7 @@
                         <StackPanel Visibility="{Binding HasSelectedProduct, Converter={StaticResource BoolToVisibilityConverter}}">
                             <!-- Product Image -->
                             <Border Background="#FFF8F8F8" CornerRadius="16" Height="200" Margin="0,0,0,20">
-                                <Image Source="{Binding SelectedProductVariant.ImagePath, Converter={StaticResource ImagePathConverter}}" Stretch="Uniform" Margin="15">
+                                <Image Source="{Binding SelectedProductImage, Converter={StaticResource ImagePathConverter}}" Stretch="Uniform" Margin="15">
                                     <Image.Clip>
                                         <RectangleGeometry Rect="0,0,170,170" RadiusX="10" RadiusY="10"/>
                                     </Image.Clip>

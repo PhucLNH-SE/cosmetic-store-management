@@ -138,7 +138,9 @@ namespace CosmeticStoreManagement.ViewModels.admin
 
             AddCommand = new RelayCommand(
                 o => AddProduct(),
-                o => !string.IsNullOrEmpty(textboxitem.ProductName) && textboxitem.Price > 0
+                o => !string.IsNullOrWhiteSpace(textboxitem.ProductName)
+                    && !string.IsNullOrWhiteSpace(textboxitem.Volume)
+                    && textboxitem.Price > 0
             );
 
             AddTypeCommand = new RelayCommand(
@@ -171,19 +173,19 @@ namespace CosmeticStoreManagement.ViewModels.admin
                                join c in context.Categories on p.CategoryId equals c.CategoryId
                                join b in context.Brands on p.BrandId equals b.BrandId
                                select new
-                               {
-                                   p.ProductId,
-                                   v.VariantId,
-                                   p.ProductName,
-                                   v.Volume,
-                                   Price = v.Price ?? 0,
-                                   IsActive = p.IsActive,
-                                   p.BrandId,
-                                   BrandName = b.BrandName,
-                                   p.CategoryId,
-                                   CategoryName = c.CategoryName,
-                                   v.ImagePath
-                               }).ToList();
+                                {
+                                    p.ProductId,
+                                    v.VariantId,
+                                    p.ProductName,
+                                    v.Volume,
+                                    Price = v.Price ?? 0,
+                                    IsActive = p.IsActive,
+                                    p.BrandId,
+                                    BrandName = b.BrandName,
+                                    p.CategoryId,
+                                    CategoryName = c.CategoryName,
+                                    p.ImagePath
+                                }).ToList();
 
                 var displayList = new List<ProductItemDisplay>();
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
@@ -287,19 +289,29 @@ namespace CosmeticStoreManagement.ViewModels.admin
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(textboxitem.Volume))
+            {
+                MessageBox.Show("Vui lòng nhập dung tích/loại sản phẩm!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             using (var context = new AppDbContext())
             {
                 try
                 {
-                    if (context.Products.Any(p => p.ProductName.ToLower() == textboxitem.ProductName.ToLower()))
+                    string normalizedName = textboxitem.ProductName.Trim().ToLower();
+                    if (context.Products.Any(p =>
+                        p.ProductName.ToLower() == normalizedName &&
+                        p.BrandId == textboxitem.BrandId &&
+                        p.CategoryId == textboxitem.CategoryId))
                     {
-                        MessageBox.Show("Sản phẩm này đã tồn tại!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Sản phẩm này đã tồn tại trong cùng thương hiệu và danh mục!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
                     var newP = new Product
                     {
-                        ProductName = textboxitem.ProductName,
+                        ProductName = textboxitem.ProductName.Trim(),
                         BrandId = textboxitem.BrandId,
                         CategoryId = textboxitem.CategoryId,
                         IsActive = true
@@ -308,13 +320,16 @@ namespace CosmeticStoreManagement.ViewModels.admin
                     context.SaveChanges();
 
                     string safeImagePath = SaveImageSafely(textboxitem.ImagePath, newP.ProductId);
+                    if (!string.IsNullOrWhiteSpace(safeImagePath))
+                    {
+                        newP.ImagePath = safeImagePath;
+                    }
 
                     var newV = new ProductVariant
                     {
                         ProductId = newP.ProductId,
-                        Volume = textboxitem.Volume,
+                        Volume = textboxitem.Volume.Trim(),
                         Price = textboxitem.Price,
-                        ImagePath = safeImagePath,
                         IsActive = true,
                         StockQuantity = 0
                     };
@@ -333,25 +348,40 @@ namespace CosmeticStoreManagement.ViewModels.admin
         {
             using (var context = new AppDbContext())
             {
-                bool isExist = context.ProductVariants.Any(v => v.ProductId == selecteditem.ProductId && v.Volume.ToLower() == textboxitem.Volume.ToLower());
+                string normalizedVolume = textboxitem.Volume?.Trim().ToLower() ?? string.Empty;
+                bool isExist = context.ProductVariants.Any(v =>
+                    v.ProductId == selecteditem.ProductId &&
+                    v.Volume != null &&
+                    v.Volume.ToLower() == normalizedVolume);
                 if (isExist)
                 {
                     MessageBox.Show("Dung tích này đã tồn tại!");
                     return;
                 }
 
-                string safeImagePath = SaveImageSafely(textboxitem.ImagePath, selecteditem.ProductId);
-
                 var v = new ProductVariant
                 {
                     ProductId = selecteditem.ProductId,
-                    Volume = textboxitem.Volume,
+                    Volume = textboxitem.Volume.Trim(),
                     Price = textboxitem.Price,
-                    ImagePath = safeImagePath,
                     IsActive = true,
                     StockQuantity = 0
                 };
                 context.ProductVariants.Add(v);
+
+                if (!string.IsNullOrWhiteSpace(textboxitem.ImagePath))
+                {
+                    var product = context.Products.Find(selecteditem.ProductId);
+                    if (product != null)
+                    {
+                        string safeImagePath = SaveImageSafely(textboxitem.ImagePath, product.ProductId);
+                        if (!string.IsNullOrWhiteSpace(safeImagePath))
+                        {
+                            product.ImagePath = safeImagePath;
+                        }
+                    }
+                }
+
                 context.SaveChanges();
 
                 MessageBox.Show($"Thêm loại {textboxitem.Volume} thành công!");
@@ -367,16 +397,46 @@ namespace CosmeticStoreManagement.ViewModels.admin
                 var v = context.ProductVariants.Find(textboxitem.VariantId);
                 if (p != null && v != null)
                 {
-                    p.ProductName = textboxitem.ProductName;
+                    if (string.IsNullOrWhiteSpace(textboxitem.ProductName) || string.IsNullOrWhiteSpace(textboxitem.Volume))
+                    {
+                        MessageBox.Show("Tên sản phẩm và dung tích không được để trống!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    string normalizedName = textboxitem.ProductName.Trim().ToLower();
+                    bool duplicatedProduct = context.Products.Any(prod =>
+                        prod.ProductId != p.ProductId &&
+                        prod.ProductName.ToLower() == normalizedName &&
+                        prod.BrandId == textboxitem.BrandId &&
+                        prod.CategoryId == textboxitem.CategoryId);
+                    if (duplicatedProduct)
+                    {
+                        MessageBox.Show("Đã tồn tại sản phẩm khác cùng tên, thương hiệu và danh mục!", "Trùng dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    string normalizedVolume = textboxitem.Volume.Trim().ToLower();
+                    bool duplicatedVariant = context.ProductVariants.Any(variant =>
+                        variant.VariantId != v.VariantId &&
+                        variant.ProductId == p.ProductId &&
+                        variant.Volume != null &&
+                        variant.Volume.ToLower() == normalizedVolume);
+                    if (duplicatedVariant)
+                    {
+                        MessageBox.Show("Dung tích này đã tồn tại cho sản phẩm hiện tại!", "Trùng dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    p.ProductName = textboxitem.ProductName.Trim();
                     p.CategoryId = textboxitem.CategoryId;
                     p.BrandId = textboxitem.BrandId;
-                    v.Volume = textboxitem.Volume;
+                    v.Volume = textboxitem.Volume.Trim();
                     v.Price = textboxitem.Price;
 
                     string safeImagePath = SaveImageSafely(textboxitem.ImagePath, p.ProductId);
                     if (!string.IsNullOrEmpty(safeImagePath))
                     {
-                        v.ImagePath = safeImagePath;
+                        p.ImagePath = safeImagePath;
                     }
 
                     context.SaveChanges();
