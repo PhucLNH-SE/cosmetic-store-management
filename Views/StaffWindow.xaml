@@ -93,6 +93,9 @@
                     <Button Content="Products"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Products_Click"/>
+                    <Button Content="Feedback"
+                            Style="{StaticResource MenuButtonStyle}"
+                            Click="Feedback_Click"/>
                     <Button Content="Cart"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Cart_Click"/>

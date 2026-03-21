@@ -8,6 +8,8 @@ public partial class StaffWindow : Window
 {
     private StaffSalesPage? _salesPage;
     private StaffCustomerPage? _customerPage;
+    private StaffOrdersPage? _ordersPage;
+    private StaffFeedbackPage? _feedbackPage;
 
     public StaffWindow()
     {
@@ -29,6 +31,11 @@ public partial class StaffWindow : Window
     private void Cart_Click(object sender, RoutedEventArgs e)
     {
         OpenSalesPage();
+    }
+
+    private void Feedback_Click(object sender, RoutedEventArgs e)
+    {
+        OpenFeedbackPage();
     }
 
     private void Customer_Click(object sender, RoutedEventArgs e)
@@ -65,6 +72,7 @@ public partial class StaffWindow : Window
         try
         {
             _salesPage ??= new StaffSalesPage();
+            _salesPage.RefreshData();
 
             if (!ReferenceEquals(mainFrame.Content, _salesPage))
             {
@@ -104,10 +112,33 @@ public partial class StaffWindow : Window
 
     private void OpenOrdersPage()
     {
+        _ordersPage ??= new StaffOrdersPage();
         _ordersPage.RefreshOrders();
         if (!ReferenceEquals(mainFrame.Content, _ordersPage))
         {
             mainFrame.Navigate(_ordersPage);
+        }
+    }
+
+    private void OpenFeedbackPage()
+    {
+        try
+        {
+            _feedbackPage ??= new StaffFeedbackPage();
+            _feedbackPage.RefreshOrders();
+
+            if (!ReferenceEquals(mainFrame.Content, _feedbackPage))
+            {
+                mainFrame.Navigate(_feedbackPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to open the feedback page.\n{ex.Message}",
+                "Staff page error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 }
