@@ -7,11 +7,13 @@ namespace CosmeticStoreManagement.Views;
 public partial class StaffWindow : Window
 {
     private readonly StaffSalesPage _salesPage;
+    private readonly StaffOrdersPage _ordersPage;
 
     public StaffWindow()
     {
         InitializeComponent();
         _salesPage = new StaffSalesPage();
+        _ordersPage = new StaffOrdersPage();
         OpenSalesPage();
     }
 
@@ -42,7 +44,7 @@ public partial class StaffWindow : Window
 
     private void Order_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Order page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenOrdersPage();
     }
 
     private void Logout_Click(object sender, RoutedEventArgs e)
@@ -59,6 +61,15 @@ public partial class StaffWindow : Window
         if (!ReferenceEquals(mainFrame.Content, _salesPage))
         {
             mainFrame.Navigate(_salesPage);
+        }
+    }
+
+    private void OpenOrdersPage()
+    {
+        _ordersPage.RefreshOrders();
+        if (!ReferenceEquals(mainFrame.Content, _ordersPage))
+        {
+            mainFrame.Navigate(_ordersPage);
         }
     }
 }
