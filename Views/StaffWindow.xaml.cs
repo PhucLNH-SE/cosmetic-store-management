@@ -6,14 +6,18 @@ namespace CosmeticStoreManagement.Views;
 
 public partial class StaffWindow : Window
 {
-    private readonly StaffSalesPage _salesPage;
-    private readonly StaffOrdersPage _ordersPage;
+    private StaffSalesPage? _salesPage;
+    private StaffCustomerPage? _customerPage;
 
     public StaffWindow()
     {
         InitializeComponent();
-        _salesPage = new StaffSalesPage();
-        _ordersPage = new StaffOrdersPage();
+        Loaded += StaffWindow_Loaded;
+    }
+
+    private void StaffWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= StaffWindow_Loaded;
         OpenSalesPage();
     }
 
@@ -29,7 +33,7 @@ public partial class StaffWindow : Window
 
     private void Customer_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Customer page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenCustomerPage();
     }
 
     private void Voucher_Click(object sender, RoutedEventArgs e)
@@ -58,9 +62,43 @@ public partial class StaffWindow : Window
 
     private void OpenSalesPage()
     {
-        if (!ReferenceEquals(mainFrame.Content, _salesPage))
+        try
         {
-            mainFrame.Navigate(_salesPage);
+            _salesPage ??= new StaffSalesPage();
+
+            if (!ReferenceEquals(mainFrame.Content, _salesPage))
+            {
+                mainFrame.Navigate(_salesPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to open the sales page.\n{ex.Message}",
+                "Staff page error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+    }
+
+    private void OpenCustomerPage()
+    {
+        try
+        {
+            _customerPage ??= new StaffCustomerPage();
+
+            if (!ReferenceEquals(mainFrame.Content, _customerPage))
+            {
+                mainFrame.Navigate(_customerPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to open the customer page.\n{ex.Message}",
+                "Staff page error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
         }
     }
 

@@ -13,13 +13,16 @@ namespace CosmeticStoreManagement.ViewModels;
 
 public class StaffSalesPageVM : BaseViewModel
 {
-    private const string WalkInCustomerPhone = "STAFF-WALKIN";
+    private const string LegacyWalkInCustomerPhone = "STAFF-WALKIN";
 
     public ObservableCollection<ProductVariant> ProductVariants { get; } = new();
     public ObservableCollection<Brand> Brands { get; } = new();
     public ObservableCollection<Category> Categories { get; } = new();
+    public ObservableCollection<Customer> Customers { get; } = new();
     public ObservableCollection<StaffCartLineVM> CartItems { get; } = new();
+
     public ICollectionView ProductVariantsView { get; }
+    public ICollectionView CustomerOptionsView { get; }
 
     public List<string> SortOptions { get; } = new()
     {
@@ -104,22 +107,101 @@ public class StaffSalesPageVM : BaseViewModel
         }
     }
 
+    private string _customerSearchText = string.Empty;
+    public string CustomerSearchText
+    {
+        get => _customerSearchText;
+        set
+        {
+            if (_customerSearchText == value)
+            {
+                return;
+            }
+
+            _customerSearchText = value;
+            OnPropertyChanged();
+
+            if (!_isSyncingCustomerSearch && _selectedCustomer != null)
+            {
+                SetSelectedCustomer(null, syncSearchText: false, closeSuggestions: false);
+            }
+
+            RefreshCustomerFilter();
+            ShowCustomerSuggestions = !string.IsNullOrWhiteSpace(_customerSearchText);
+        }
+    }
+
+    private Customer? _selectedCustomer;
+    public Customer? SelectedCustomer
+    {
+        get => _selectedCustomer;
+        set => SetSelectedCustomer(value, syncSearchText: true, closeSuggestions: value != null);
+    }
+
+    private bool _showCustomerSuggestions;
+    public bool ShowCustomerSuggestions
+    {
+        get => _showCustomerSuggestions;
+        set
+        {
+            if (_showCustomerSuggestions == value)
+            {
+                return;
+            }
+
+            _showCustomerSuggestions = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(ShowCustomerNoResults));
+        }
+    }
+
+    public bool HasCustomerResults => CustomerOptionsView.Cast<object>().Any();
+
+    public bool ShowCustomerNoResults =>
+        ShowCustomerSuggestions &&
+        !HasCustomerResults &&
+        !string.IsNullOrWhiteSpace(CustomerSearchText);
+
     public int TotalQuantity => CartItems.Sum(item => item.Quantity);
 
     public decimal CartTotal => CartItems.Sum(item => item.LineTotal);
 
     public bool HasCartItems => CartItems.Count > 0;
 
+    public bool HasSelectedCustomer => SelectedCustomer != null;
+
+    public bool CanCheckout => HasCartItems && HasSelectedCustomer;
+
+    public string SelectedCustomerName =>
+        string.IsNullOrWhiteSpace(SelectedCustomer?.CustomerName)
+            ? "No customer selected"
+            : SelectedCustomer.CustomerName!;
+
+    public string SelectedCustomerPhone =>
+        string.IsNullOrWhiteSpace(SelectedCustomer?.Phone)
+            ? "No phone number"
+            : SelectedCustomer.Phone!;
+
+    public string SelectedCustomerAddress =>
+        string.IsNullOrWhiteSpace(SelectedCustomer?.Address)
+            ? "No address"
+            : SelectedCustomer.Address!;
+
+    private bool _isSyncingCustomerSearch;
+
     public StaffSalesPageVM()
     {
         ProductVariantsView = CollectionViewSource.GetDefaultView(ProductVariants);
         ProductVariantsView.Filter = FilterPredicate;
 
+        CustomerOptionsView = CollectionViewSource.GetDefaultView(Customers);
+        CustomerOptionsView.Filter = CustomerFilterPredicate;
+
         AddToCartCommand = new RelayCommand(AddToCart);
         IncreaseQuantityCommand = new RelayCommand(IncreaseQuantity);
         DecreaseQuantityCommand = new RelayCommand(DecreaseQuantity);
         RemoveFromCartCommand = new RelayCommand(RemoveFromCart);
-        CheckoutCommand = new RelayCommand(_ => Checkout(), _ => HasCartItems);
+        CheckoutCommand = new RelayCommand(_ => Checkout(), _ => CanCheckout);
 
         CartItems.CollectionChanged += CartItems_CollectionChanged;
 
@@ -132,6 +214,8 @@ public class StaffSalesPageVM : BaseViewModel
         var currentCategoryId = SelectedCategory?.CategoryId ?? 0;
         var currentSort = SelectedSort;
         var currentSearch = SearchText;
+        var currentCustomerSearch = CustomerSearchText;
+        var currentCustomerId = SelectedCustomer?.CustomerId;
 
         try
         {
@@ -147,6 +231,13 @@ public class StaffSalesPageVM : BaseViewModel
                 .AsNoTracking()
                 .Where(category => category.Status == true)
                 .OrderBy(category => category.CategoryName)
+                .ToListAsync();
+
+            var customers = await context.Customers
+                .AsNoTracking()
+                .Where(customer => customer.Phone != LegacyWalkInCustomerPhone)
+                .OrderBy(customer => customer.CustomerName)
+                .ThenBy(customer => customer.Phone)
                 .ToListAsync();
 
             var variants = await context.ProductVariants
@@ -179,6 +270,12 @@ public class StaffSalesPageVM : BaseViewModel
                 Categories.Add(category);
             }
 
+            Customers.Clear();
+            foreach (var customer in customers)
+            {
+                Customers.Add(customer);
+            }
+
             ProductVariants.Clear();
             foreach (var variant in variants)
             {
@@ -189,8 +286,11 @@ public class StaffSalesPageVM : BaseViewModel
             SelectedCategory = Categories.FirstOrDefault(category => category.CategoryId == currentCategoryId) ?? Categories.FirstOrDefault();
             SelectedSort = SortOptions.Contains(currentSort ?? string.Empty) ? currentSort : SortOptions.FirstOrDefault();
             SearchText = currentSearch;
+            CustomerSearchText = currentCustomerSearch;
+            SelectedCustomer = Customers.FirstOrDefault(customer => customer.CustomerId == currentCustomerId);
 
             RefreshCartAvailability(variants);
+            RefreshCustomerFilter();
             ApplySort();
             ApplyFilter();
         }
@@ -283,6 +383,63 @@ public class StaffSalesPageVM : BaseViewModel
             || brandName.Contains(keyword)
             || categoryName.Contains(keyword)
             || volume.Contains(keyword);
+    }
+
+    private bool CustomerFilterPredicate(object obj)
+    {
+        if (obj is not Customer customer)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(CustomerSearchText))
+        {
+            return true;
+        }
+
+        var keyword = CustomerSearchText.Trim();
+        return (!string.IsNullOrWhiteSpace(customer.CustomerName)
+                && customer.CustomerName.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+               || (!string.IsNullOrWhiteSpace(customer.Phone)
+                   && customer.Phone.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void RefreshCustomerFilter()
+    {
+        CustomerOptionsView.Refresh();
+        OnPropertyChanged(nameof(HasCustomerResults));
+        OnPropertyChanged(nameof(ShowCustomerNoResults));
+    }
+
+    private void SetSelectedCustomer(Customer? customer, bool syncSearchText, bool closeSuggestions)
+    {
+        if (_selectedCustomer == customer)
+        {
+            if (closeSuggestions)
+            {
+                ShowCustomerSuggestions = false;
+            }
+
+            return;
+        }
+
+        _selectedCustomer = customer;
+        OnPropertyChanged(nameof(SelectedCustomer));
+        OnPropertyChanged(nameof(HasSelectedCustomer));
+        OnPropertyChanged(nameof(SelectedCustomerName));
+        OnPropertyChanged(nameof(SelectedCustomerPhone));
+        OnPropertyChanged(nameof(SelectedCustomerAddress));
+        OnPropertyChanged(nameof(CanCheckout));
+
+        if (syncSearchText)
+        {
+            _isSyncingCustomerSearch = true;
+            CustomerSearchText = customer?.CustomerName ?? string.Empty;
+            _isSyncingCustomerSearch = false;
+        }
+
+        ShowCustomerSuggestions = closeSuggestions ? false : !string.IsNullOrWhiteSpace(CustomerSearchText);
+        CommandManager.InvalidateRequerySuggested();
     }
 
     private void AddToCart(object? parameter)
@@ -379,6 +536,16 @@ public class StaffSalesPageVM : BaseViewModel
             return;
         }
 
+        if (SelectedCustomer == null)
+        {
+            MessageBox.Show(
+                "Select a customer before checkout.",
+                "Customer required",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
         var currentUser = UserSession.CurrentUser;
         if (currentUser == null)
         {
@@ -394,6 +561,22 @@ public class StaffSalesPageVM : BaseViewModel
         {
             using var context = new AppDbContext();
             using var transaction = context.Database.BeginTransaction();
+
+            var selectedCustomerId = SelectedCustomer.CustomerId;
+            var selectedCustomerName = SelectedCustomerName;
+
+            var customerExists = context.Customers.Any(customer => customer.CustomerId == selectedCustomerId);
+            if (!customerExists)
+            {
+                transaction.Rollback();
+                LoadData();
+                MessageBox.Show(
+                    "The selected customer no longer exists. Please choose again.",
+                    "Customer not found",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
 
             var variantIds = CartItems.Select(item => item.VariantId).ToList();
             var stockMap = context.ProductVariants
@@ -430,12 +613,10 @@ public class StaffSalesPageVM : BaseViewModel
                 return;
             }
 
-            var walkInCustomer = EnsureWalkInCustomer(context);
             var totalAmount = CartTotal;
-
             var order = new Order
             {
-                CustomerId = walkInCustomer.CustomerId,
+                CustomerId = selectedCustomerId,
                 UserId = currentUser.UserId,
                 OrderDate = DateTime.Now,
                 TotalAmount = totalAmount,
@@ -466,10 +647,12 @@ public class StaffSalesPageVM : BaseViewModel
             transaction.Commit();
 
             CartItems.Clear();
+            SelectedCustomer = null;
+            CustomerSearchText = string.Empty;
             LoadData();
 
             MessageBox.Show(
-                $"Order #{order.OrderId} was created successfully.\nTotal: {totalAmount:N0} VND",
+                $"Order #{order.OrderId} for {selectedCustomerName} was created successfully.\nTotal: {totalAmount:N0} VND",
                 "Checkout complete",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
@@ -482,27 +665,6 @@ public class StaffSalesPageVM : BaseViewModel
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
-    }
-
-    private Customer EnsureWalkInCustomer(AppDbContext context)
-    {
-        var customer = context.Customers.FirstOrDefault(item => item.Phone == WalkInCustomerPhone);
-        if (customer != null)
-        {
-            return customer;
-        }
-
-        customer = new Customer
-        {
-            CustomerName = "Walk-in Customer",
-            Phone = WalkInCustomerPhone,
-            Address = "In-store purchase"
-        };
-
-        context.Customers.Add(customer);
-        context.SaveChanges();
-
-        return customer;
     }
 
     private void RefreshCartAvailability(IEnumerable<ProductVariant> latestVariants)
@@ -548,6 +710,7 @@ public class StaffSalesPageVM : BaseViewModel
         OnPropertyChanged(nameof(TotalQuantity));
         OnPropertyChanged(nameof(CartTotal));
         OnPropertyChanged(nameof(HasCartItems));
+        OnPropertyChanged(nameof(CanCheckout));
         CommandManager.InvalidateRequerySuggested();
     }
 }
