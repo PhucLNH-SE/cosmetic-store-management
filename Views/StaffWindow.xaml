@@ -14,7 +14,6 @@
         WindowStartupLocation="CenterScreen"
         Background="#FFF1F6F1">
     <Window.Resources>
-        <!-- Button Style for Menu -->
         <Style x:Key="MenuButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
@@ -27,7 +26,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" 
+                        <Border x:Name="border"
                                 Background="{TemplateBinding Background}"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -41,11 +40,6 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
-
-        <!-- Active Menu Button Style -->
-        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Setter Property="Background" Value="#FF5D9B68"/>
         </Style>
 
         <Style x:Key="RoundedButtonStyle" TargetType="Button">
@@ -74,7 +68,6 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- SIDEBAR MENU -->
         <Border Grid.Column="0" Background="#FF3E6B48">
             <Grid>
                 <Grid.RowDefinitions>
@@ -83,10 +76,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- Logo/Title -->
                 <Border Grid.Row="0" Padding="20,24">
                     <StackPanel>
-                        <TextBlock Text="🧴 Cosmetic Store"
+                        <TextBlock Text="Cosmetic Store"
                                    FontSize="18"
                                    FontWeight="Bold"
                                    Foreground="White"/>
@@ -97,29 +89,27 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Menu Items -->
                 <StackPanel Grid.Row="1" Margin="0,20,0,0">
-                    <Button Content="🛒  Products" 
+                    <Button Content="Products"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Products_Click"/>
-                    <Button Content="🛍️  Cart" 
+                    <Button Content="Cart"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Cart_Click"/>
-                    <Button Content="👥  Customer" 
+                    <Button Content="Customer"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Customer_Click"/>
-                    <Button Content="🎟️  Voucher" 
+                    <Button Content="Voucher"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Voucher_Click"/>
-                    <Button Content="💳  Payment" 
+                    <Button Content="Payment"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Payment_Click"/>
-                    <Button Content="📦  Order" 
+                    <Button Content="Order"
                             Style="{StaticResource MenuButtonStyle}"
                             Click="Order_Click"/>
                 </StackPanel>
 
-                <!-- Logout -->
                 <Border Grid.Row="2" Padding="16,16">
                     <Button Content="Logout"
                             Style="{StaticResource RoundedButtonStyle}"
@@ -129,14 +119,12 @@
             </Grid>
         </Border>
 
-        <!-- MAIN CONTENT AREA -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Header -->
             <Border Grid.Row="0" Background="#FF3E6B48" Padding="24,16">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Left">
@@ -152,8 +140,8 @@
                 </DockPanel>
             </Border>
 
-            <!-- Frame for Pages -->
-            <Frame x:Name="mainFrame" Grid.Row="1" 
+            <Frame x:Name="mainFrame"
+                   Grid.Row="1"
                    NavigationUIVisibility="Hidden"
                    Background="#FFF1F6F1"/>
         </Grid>

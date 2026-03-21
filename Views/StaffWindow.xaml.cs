@@ -6,46 +6,43 @@ namespace CosmeticStoreManagement.Views;
 
 public partial class StaffWindow : Window
 {
+    private readonly StaffSalesPage _salesPage;
+
     public StaffWindow()
     {
         InitializeComponent();
-        // Load Products page by default
-        mainFrame.Navigate(new ProductPage());
+        _salesPage = new StaffSalesPage();
+        OpenSalesPage();
     }
 
     private void Products_Click(object sender, RoutedEventArgs e)
     {
-        mainFrame.Navigate(new ProductPage());
+        OpenSalesPage();
     }
 
     private void Cart_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder - will implement later
-        MessageBox.Show("Cart page coming soon!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenSalesPage();
     }
 
     private void Customer_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder - will implement later
-        MessageBox.Show("Customer page coming soon!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show("Customer page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void Voucher_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder - will implement later
-        MessageBox.Show("Voucher page coming soon!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show("Voucher page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void Payment_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder - will implement later
-        MessageBox.Show("Payment page coming soon!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenSalesPage();
     }
 
     private void Order_Click(object sender, RoutedEventArgs e)
     {
-        // Placeholder - will implement later
-        MessageBox.Show("Order page coming soon!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        MessageBox.Show("Order page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
     private void Logout_Click(object sender, RoutedEventArgs e)
@@ -55,5 +52,13 @@ public partial class StaffWindow : Window
         WindowStateHelper.ApplyFrom(this, loginWindow);
         loginWindow.Show();
         Close();
+    }
+
+    private void OpenSalesPage()
+    {
+        if (!ReferenceEquals(mainFrame.Content, _salesPage))
+        {
+            mainFrame.Navigate(_salesPage);
+        }
     }
 }
