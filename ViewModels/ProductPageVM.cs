@@ -117,7 +117,7 @@ public class ProductPageVM : BaseViewModel
     public string? SelectedProductBrand => SelectedProductVariant?.Product?.Brand?.BrandName;
     public string? SelectedProductCategory => SelectedProductVariant?.Product?.Category?.CategoryName;
     public string? SelectedProductDescription => SelectedProductVariant?.Product?.Description;
-    public string? SelectedProductImage => SelectedProductVariant?.ImagePath;
+    public string? SelectedProductImage => SelectedProductVariant?.Product?.ImagePath;
 
     public IEnumerable<ProductVariant>? SelectedProductVariants
     {

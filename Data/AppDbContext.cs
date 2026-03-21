@@ -83,9 +83,9 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId, "idx_cart_user");
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(20);
+                .HasDefaultValueSql("(sysdatetime())")
+                .HasColumnType("datetime2(0)");
+            entity.Property(e => e.Status).HasDefaultValue(true);
 
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
@@ -99,7 +99,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.CartId, "idx_cartitems_cart");
 
-            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(12, 2)");
 
             entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.CartId)
@@ -139,9 +139,9 @@ public partial class AppDbContext : DbContext
             entity.HasKey(e => e.ImportId).HasName("PK__ImportOr__869767EA8899CF44");
 
             entity.Property(e => e.ImportDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.TotalCost).HasColumnType("decimal(10, 2)");
+                .HasDefaultValueSql("(sysdatetime())")
+                .HasColumnType("datetime2(0)");
+            entity.Property(e => e.TotalCost).HasColumnType("decimal(12, 2)");
 
             entity.HasOne(d => d.User).WithMany(p => p.ImportOrders)
                 .HasForeignKey(d => d.UserId)
@@ -175,12 +175,12 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.UserId, "idx_order_user");
 
             entity.Property(e => e.Comment).HasMaxLength(500);
-            entity.Property(e => e.FinalAmount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.FinalAmount).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.OrderDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
+                .HasDefaultValueSql("(sysdatetime())")
+                .HasColumnType("datetime2(0)");
+            entity.Property(e => e.Status).HasMaxLength(20);
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(12, 2)");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
@@ -201,9 +201,9 @@ public partial class AppDbContext : DbContext
         {
             entity.HasKey(e => e.OrderDetailId).HasName("PK__OrderDet__D3B9D36C916A5D84");
 
-            entity.Property(e => e.ImportPrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.Subtotal).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.UnitPrice).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.ImportPrice).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.Subtotal).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.UnitPrice).HasColumnType("decimal(12, 2)");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderDetails)
                 .HasForeignKey(d => d.OrderId)
@@ -225,6 +225,7 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.CategoryId, "idx_product_category");
 
             entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.ImagePath).HasMaxLength(255);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.ProductName).HasMaxLength(150);
 
@@ -245,9 +246,8 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.ProductId, "idx_variant_product");
 
-            entity.Property(e => e.ImagePath).HasMaxLength(255);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Price).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.Sku)
                 .HasMaxLength(50)
                 .HasColumnName("SKU");
@@ -266,10 +266,10 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.Username, "UQ__Users__536C85E460C41673").IsUnique();
 
             entity.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime");
+                .HasDefaultValueSql("(sysdatetime())")
+                .HasColumnType("datetime2(0)");
             entity.Property(e => e.FullName).HasMaxLength(100);
-            entity.Property(e => e.Password).HasMaxLength(100);
+            entity.Property(e => e.Password).HasMaxLength(255);
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.Status).HasDefaultValue(true);
             entity.Property(e => e.Username).HasMaxLength(50);
@@ -282,10 +282,10 @@ public partial class AppDbContext : DbContext
             entity.HasIndex(e => e.VoucherCode, "UQ__Vouchers__7F0ABCA94DDBD9B3").IsUnique();
 
             entity.Property(e => e.DiscountType).HasMaxLength(20);
-            entity.Property(e => e.DiscountValue).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.EndDate).HasColumnType("datetime");
+            entity.Property(e => e.DiscountValue).HasColumnType("decimal(12, 2)");
+            entity.Property(e => e.EndDate).HasColumnType("datetime2(0)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
-            entity.Property(e => e.StartDate).HasColumnType("datetime");
+            entity.Property(e => e.StartDate).HasColumnType("datetime2(0)");
             entity.Property(e => e.VoucherCode).HasMaxLength(50);
         });
 

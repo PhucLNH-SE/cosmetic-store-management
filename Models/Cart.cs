@@ -11,7 +11,7 @@ public partial class Cart : ICloneable
 
     public DateTime? CreatedDate { get; set; }
 
-    public string? Status { get; set; }
+    public bool? Status { get; set; }
 
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 

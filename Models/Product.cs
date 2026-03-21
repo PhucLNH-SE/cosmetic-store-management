@@ -15,6 +15,8 @@ public partial class Product : ICloneable
 
     public string? Description { get; set; }
 
+    public string? ImagePath { get; set; }
+
     public bool? IsActive { get; set; }
 
     public virtual Brand Brand { get; set; } = null!;
@@ -32,6 +34,7 @@ public partial class Product : ICloneable
             BrandId = this.BrandId,
             CategoryId = this.CategoryId,
             Description = this.Description,
+            ImagePath = this.ImagePath,
             IsActive = this.IsActive
         };
     }

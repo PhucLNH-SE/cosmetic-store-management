@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CosmeticStoreManagement.Models;
 
@@ -17,7 +18,18 @@ public partial class ProductVariant : ICloneable
 
     public string? Sku { get; set; }
 
-    public string? ImagePath { get; set; }
+    [NotMapped]
+    public string? ImagePath
+    {
+        get => Product?.ImagePath;
+        set
+        {
+            if (Product != null)
+            {
+                Product.ImagePath = value;
+            }
+        }
+    }
 
     public bool? IsActive { get; set; }
 
@@ -39,7 +51,6 @@ public partial class ProductVariant : ICloneable
             Price = this.Price,
             StockQuantity = this.StockQuantity,
             Sku = this.Sku,
-            ImagePath = this.ImagePath,
             IsActive = this.IsActive
         };
     }
