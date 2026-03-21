@@ -48,7 +48,7 @@ public partial class StaffWindow : Window
 
     private void Order_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Order page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenOrdersPage();
     }
 
     private void Logout_Click(object sender, RoutedEventArgs e)
@@ -99,6 +99,15 @@ public partial class StaffWindow : Window
                 "Staff page error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
+        }
+    }
+
+    private void OpenOrdersPage()
+    {
+        _ordersPage.RefreshOrders();
+        if (!ReferenceEquals(mainFrame.Content, _ordersPage))
+        {
+            mainFrame.Navigate(_ordersPage);
         }
     }
 }
