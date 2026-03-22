@@ -924,6 +924,7 @@ public class StaffSalesPageVM : BaseViewModel
             return $"This voucher expired on {voucher.EndDate.Value:dd/MM/yyyy}.";
         }
 
+        // Voucher quantity is reduced after each successful checkout, so block usage when no lượt remain.
         if ((voucher.Quantity ?? 0) <= 0)
         {
             return "This voucher has no remaining quantity.";
