@@ -4,23 +4,437 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Title="ViewStatisticsPage">
-    <Grid Background="#FFF9F6F2">
-        <Border Background="#FFF3E4D7"
-                CornerRadius="24"
-                Padding="28"
-                Margin="8">
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="View statistics"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           Foreground="#FF4A2E1E"/>
-                <TextBlock Text="Statistics dashboard UI placeholder. Charts, summary cards, and business numbers will be added here later."
-                           Margin="0,14,0,0"
-                           FontSize="16"
-                           Foreground="#FF6F5547"
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+      Title="ViewStatisticsPage"
+      Background="#FFF9F6F2"
+      d:DesignHeight="680"
+      d:DesignWidth="980">
+    <Page.Resources>
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="22"/>
+            <Setter Property="Padding" Value="18"/>
+        </Style>
+
+        <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#FF4A2E1E"/>
+        </Style>
+
+        <Style x:Key="BodyTextStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FF765A4A"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="MinWidth" Value="170"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FFE2D5CB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF8A5A44"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="16,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FF9B6A51"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Style="{StaticResource CardStyle}"
+                    Background="#FFF3E4D7"
+                    Margin="0,0,0,18">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="View statistics"
+                                   FontSize="30"
+                                   FontWeight="Bold"
+                                   Foreground="#FF4A2E1E"/>
+                        <TextBlock Text="Track sales performance, import cost, order quality, and staff contribution from one dashboard."
+                                   Margin="0,10,0,6"
+                                   FontSize="15"
+                                   Foreground="#FF705548"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding PeriodDescription}"
+                                   Foreground="#FF8A6A5A"/>
+                    </StackPanel>
+
+                    <WrapPanel Grid.Column="1"
+                               VerticalAlignment="Top">
+                        <ComboBox ItemsSource="{Binding PeriodOptions}"
+                                  SelectedItem="{Binding SelectedPeriod}"
+                                  Style="{StaticResource FilterComboBoxStyle}"
+                                  Margin="0,0,12,0"/>
+                        <Button Content="Refresh"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="110"
+                                Height="40"
+                                Command="{Binding RefreshCommand}"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+
+            <ItemsControl Grid.Row="1"
+                          ItemsSource="{Binding SummaryCards}"
+                          Margin="0,0,0,18">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="210"
+                                Margin="0,0,16,16"
+                                Padding="18"
+                                CornerRadius="18"
+                                Background="{Binding BackgroundColor}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF7B5F52"/>
+                                <TextBlock Text="{Binding Value}"
+                                           Margin="0,10,0,6"
+                                           FontSize="26"
+                                           FontWeight="Bold"
+                                           Foreground="{Binding AccentColor}"/>
+                                <TextBlock Text="{Binding Note}"
+                                           Foreground="#FF8E7465"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid Grid.Row="2" Margin="0,0,0,18">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.45*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Business Snapshot"
+                                   Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Text="A quick view of operational health in the selected period."
+                                   Margin="0,8,0,18"
+                                   Style="{StaticResource BodyTextStyle}"/>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Margin="0,0,10,0"
+                                    Padding="16"
+                                    CornerRadius="16"
+                                    Background="#FFF8EEE7">
+                                <StackPanel>
+                                    <TextBlock Text="Orders"
+                                               Foreground="#FF7C5D4F"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding TotalOrders}"
+                                               Margin="0,8,0,6"
+                                               FontSize="28"
+                                               FontWeight="Bold"
+                                               Foreground="#FF5D3C2D"/>
+                                    <TextBlock Text="{Binding CompletedRateDisplay, StringFormat='Completed rate: {0}'}"
+                                               Foreground="#FF8E7365"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    Padding="16"
+                                    CornerRadius="16"
+                                    Background="#FFEAF4ED">
+                                <StackPanel>
+                                    <TextBlock Text="Average order value"
+                                               Foreground="#FF4B6A56"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding AverageOrderValueDisplay}"
+                                               Margin="0,8,0,6"
+                                               FontSize="28"
+                                               FontWeight="Bold"
+                                               Foreground="#FF345D47"/>
+                                    <TextBlock Text="{Binding AverageRatingDisplay, StringFormat='Customer rating: {0}'}"
+                                               Foreground="#FF66806D"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,0,10,10"
+                                    Padding="14"
+                                    CornerRadius="14"
+                                    Background="#FFFDF1E1">
+                                <StackPanel>
+                                    <TextBlock Text="Pending orders" Foreground="#FF8C6A2B"/>
+                                    <TextBlock Text="{Binding PendingOrders}" Margin="0,6,0,0" FontSize="24" FontWeight="Bold" Foreground="#FFB3772D"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,10"
+                                    Padding="14"
+                                    CornerRadius="14"
+                                    Background="#FFFBE9E7">
+                                <StackPanel>
+                                    <TextBlock Text="Cancelled orders" Foreground="#FF8D4C45"/>
+                                    <TextBlock Text="{Binding CancelledOrders}" Margin="0,6,0,0" FontSize="24" FontWeight="Bold" Foreground="#FFC0584F"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,0,10,0"
+                                    Padding="14"
+                                    CornerRadius="14"
+                                    Background="#FFF8EDF4">
+                                <StackPanel>
+                                    <TextBlock Text="Vouchers used" Foreground="#FF7B4C73"/>
+                                    <TextBlock Text="{Binding VoucherUsageCount}" Margin="0,6,0,0" FontSize="24" FontWeight="Bold" Foreground="#FFA05E95"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    Padding="14"
+                                    CornerRadius="14"
+                                    Background="#FFF4EEE8">
+                                <StackPanel>
+                                    <TextBlock Text="Items sold" Foreground="#FF6F5D50"/>
+                                    <TextBlock Text="{Binding TotalItemsSold}" Margin="0,6,0,0" FontSize="24" FontWeight="Bold" Foreground="#FF856555"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Revenue vs import cost"
+                                   Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Text="Latest visible days in the selected period."
+                                   Margin="0,8,0,18"
+                                   Style="{StaticResource BodyTextStyle}"/>
+
+                        <ItemsControl ItemsSource="{Binding DailyRevenueItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                            Padding="12"
+                                            CornerRadius="14"
+                                            Background="#FFF8F3EE">
+                                        <StackPanel>
+                                            <DockPanel Margin="0,0,0,10">
+                                                <TextBlock Text="{Binding Label}"
+                                                           FontWeight="Bold"
+                                                           Foreground="#FF5D3D2E"/>
+                                                <TextBlock DockPanel.Dock="Right"
+                                                           Text="{Binding Revenue, StringFormat='Revenue: {0:N0} VND'}"
+                                                           Foreground="#FF5A755C"/>
+                                            </DockPanel>
+
+                                            <TextBlock Text="{Binding Cost, StringFormat='Import cost: {0:N0} VND'}"
+                                                       Margin="0,0,0,8"
+                                                       Foreground="#FF8B6A3A"/>
+
+                                            <TextBlock Text="Revenue"
+                                                       Foreground="#FF7B6252"
+                                                       Margin="0,0,0,4"/>
+                                            <ProgressBar Height="12"
+                                                         Maximum="100"
+                                                         Value="{Binding RevenueRatio}"
+                                                         Foreground="#FF7BAF83"
+                                                         Background="#FFE6EFE7"/>
+
+                                            <TextBlock Text="Import Cost"
+                                                       Foreground="#FF7B6252"
+                                                       Margin="0,8,0,4"/>
+                                            <ProgressBar Height="12"
+                                                         Maximum="100"
+                                                         Value="{Binding CostRatio}"
+                                                         Foreground="#FFD7B16A"
+                                                         Background="#FFF3EAD6"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Margin="0,8,0,0"
+                                Padding="12"
+                                CornerRadius="14"
+                                Background="#FFF7F1EA">
+                            <TextBlock Text="If there is no bar yet, that date has no completed sale or import record in the selected range."
+                                       Style="{StaticResource BodyTextStyle}"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="1.1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Top selling products"
+                                   Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Text="Products are ranked by completed quantity sold."
+                                   Margin="0,8,0,18"
+                                   Style="{StaticResource BodyTextStyle}"/>
+
+                        <ItemsControl ItemsSource="{Binding TopProducts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                            Padding="14"
+                                            CornerRadius="14"
+                                            Background="#FFF9F3ED">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding ProductName}"
+                                                           FontWeight="Bold"
+                                                           Foreground="#FF4F3124"
+                                                           TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding VariantSummary}"
+                                                           Margin="0,4,0,0"
+                                                           Foreground="#FF85685A"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1"
+                                                        HorizontalAlignment="Right">
+                                                <TextBlock Text="{Binding QuantitySold, StringFormat='Qty: {0}'}"
+                                                           HorizontalAlignment="Right"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="#FF7D5A48"/>
+                                                <TextBlock Text="{Binding Revenue, StringFormat='{}{0:N0} VND'}"
+                                                           Margin="0,4,0,0"
+                                                           HorizontalAlignment="Right"
+                                                           FontWeight="Bold"
+                                                           Foreground="#FF8A5A44"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="Staff performance"
+                                   Style="{StaticResource SectionTitleStyle}"/>
+                        <TextBlock Text="Staff are ranked by completed order revenue."
+                                   Margin="0,8,0,18"
+                                   Style="{StaticResource BodyTextStyle}"/>
+
+                        <ItemsControl ItemsSource="{Binding StaffPerformance}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="0,0,0,12"
+                                            Padding="14"
+                                            CornerRadius="14"
+                                            Background="#FFF5EFE9">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding StaffName}"
+                                                           FontWeight="Bold"
+                                                           Foreground="#FF4F3124"
+                                                           TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding CompletedOrders, StringFormat='Completed orders: {0}'}"
+                                                           Margin="0,4,0,0"
+                                                           Foreground="#FF85685A"/>
+                                                <TextBlock Text="{Binding AverageOrderValue, StringFormat='Avg order value: {0:N0} VND'}"
+                                                           Margin="0,4,0,0"
+                                                           Foreground="#FF85685A"/>
+                                            </StackPanel>
+
+                                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Revenue, StringFormat='{}{0:N0} VND'}"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Right"
+                                                       FontWeight="Bold"
+                                                       Foreground="#FF8A5A44"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </Page>

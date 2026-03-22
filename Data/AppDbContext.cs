@@ -285,6 +285,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.DiscountValue).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.EndDate).HasColumnType("datetime2(0)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.Quantity).HasDefaultValue(0);
             entity.Property(e => e.StartDate).HasColumnType("datetime2(0)");
             entity.Property(e => e.VoucherCode).HasMaxLength(50);
         });

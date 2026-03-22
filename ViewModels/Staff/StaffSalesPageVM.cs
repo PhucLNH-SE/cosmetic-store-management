@@ -37,6 +37,8 @@ public class StaffSalesPageVM : BaseViewModel
     public ICommand IncreaseQuantityCommand { get; }
     public ICommand DecreaseQuantityCommand { get; }
     public ICommand RemoveFromCartCommand { get; }
+    public ICommand ApplyVoucherCommand { get; }
+    public ICommand ClearVoucherCommand { get; }
     public ICommand CheckoutCommand { get; }
 
     private Brand? _selectedBrand;
@@ -166,6 +168,57 @@ public class StaffSalesPageVM : BaseViewModel
 
     public decimal CartTotal => CartItems.Sum(item => item.LineTotal);
 
+    private string _voucherCodeInput = string.Empty;
+    public string VoucherCodeInput
+    {
+        get => _voucherCodeInput;
+        set
+        {
+            if (_voucherCodeInput == value)
+            {
+                return;
+            }
+
+            _voucherCodeInput = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private Voucher? _appliedVoucher;
+    public Voucher? AppliedVoucher
+    {
+        get => _appliedVoucher;
+        set
+        {
+            if (_appliedVoucher == value)
+            {
+                return;
+            }
+
+            _appliedVoucher = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasAppliedVoucher));
+            OnPropertyChanged(nameof(AppliedVoucherCode));
+            OnPropertyChanged(nameof(VoucherDiscountAmount));
+            OnPropertyChanged(nameof(VoucherDiscountDisplay));
+            OnPropertyChanged(nameof(FinalCartTotal));
+            OnPropertyChanged(nameof(FinalCartTotalDisplay));
+            CommandManager.InvalidateRequerySuggested();
+        }
+    }
+
+    public bool HasAppliedVoucher => AppliedVoucher != null;
+
+    public string AppliedVoucherCode => AppliedVoucher?.VoucherCode ?? "No voucher applied";
+
+    public decimal VoucherDiscountAmount => CalculateVoucherDiscount(CartTotal, AppliedVoucher);
+
+    public string VoucherDiscountDisplay => $"{VoucherDiscountAmount:N0} VND";
+
+    public decimal FinalCartTotal => Math.Max(0m, CartTotal - VoucherDiscountAmount);
+
+    public string FinalCartTotalDisplay => $"{FinalCartTotal:N0} VND";
+
     public bool HasCartItems => CartItems.Count > 0;
 
     public bool HasSelectedCustomer => SelectedCustomer != null;
@@ -201,6 +254,8 @@ public class StaffSalesPageVM : BaseViewModel
         IncreaseQuantityCommand = new RelayCommand(IncreaseQuantity);
         DecreaseQuantityCommand = new RelayCommand(DecreaseQuantity);
         RemoveFromCartCommand = new RelayCommand(RemoveFromCart);
+        ApplyVoucherCommand = new RelayCommand(_ => ApplyVoucher());
+        ClearVoucherCommand = new RelayCommand(_ => ClearVoucher(), _ => HasAppliedVoucher || !string.IsNullOrWhiteSpace(VoucherCodeInput));
         CheckoutCommand = new RelayCommand(_ => Checkout(), _ => CanCheckout);
 
         CartItems.CollectionChanged += CartItems_CollectionChanged;
@@ -524,6 +579,82 @@ public class StaffSalesPageVM : BaseViewModel
         }
     }
 
+    private void ApplyVoucher()
+    {
+        if (!HasCartItems)
+        {
+            MessageBox.Show(
+                "Add products to the cart before applying a voucher.",
+                "Cart is empty",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var voucherCode = VoucherCodeInput.Trim();
+        if (string.IsNullOrWhiteSpace(voucherCode))
+        {
+            MessageBox.Show(
+                "Enter a voucher code first.",
+                "Voucher required",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        try
+        {
+            using var context = new AppDbContext();
+            var voucher = context.Vouchers
+                .AsNoTracking()
+                .FirstOrDefault(item => item.VoucherCode.ToLower() == voucherCode.ToLower());
+
+            if (voucher == null)
+            {
+                MessageBox.Show(
+                    "Voucher code was not found.",
+                    "Invalid voucher",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
+
+            var validationError = ValidateVoucher(voucher);
+            if (validationError != null)
+            {
+                MessageBox.Show(
+                    validationError,
+                    "Voucher unavailable",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            AppliedVoucher = voucher;
+            VoucherCodeInput = voucher.VoucherCode;
+
+            MessageBox.Show(
+                $"Voucher {voucher.VoucherCode} was applied.\nDiscount: {VoucherDiscountAmount:N0} VND",
+                "Voucher applied",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to apply the voucher.\n{ex.Message}",
+                "Voucher failed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+    }
+
+    private void ClearVoucher()
+    {
+        AppliedVoucher = null;
+        VoucherCodeInput = string.Empty;
+    }
+
     private void Checkout()
     {
         if (!HasCartItems)
@@ -613,14 +744,34 @@ public class StaffSalesPageVM : BaseViewModel
                 return;
             }
 
+            Voucher? voucherInDb = null;
+            if (AppliedVoucher != null)
+            {
+                voucherInDb = context.Vouchers.FirstOrDefault(voucher => voucher.VoucherId == AppliedVoucher.VoucherId);
+                var voucherError = ValidateVoucher(voucherInDb);
+                if (voucherError != null)
+                {
+                    transaction.Rollback();
+                    ClearVoucher();
+                    MessageBox.Show(
+                        $"The applied voucher is no longer valid.\n{voucherError}",
+                        "Voucher unavailable",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+            }
+
             var totalAmount = CartTotal;
+            var finalAmount = Math.Max(0m, totalAmount - CalculateVoucherDiscount(totalAmount, voucherInDb));
             var order = new Order
             {
                 CustomerId = selectedCustomerId,
                 UserId = currentUser.UserId,
+                VoucherId = voucherInDb?.VoucherId,
                 OrderDate = DateTime.Now,
                 TotalAmount = totalAmount,
-                FinalAmount = totalAmount,
+                FinalAmount = finalAmount,
                 Status = "Completed"
             };
 
@@ -643,16 +794,22 @@ public class StaffSalesPageVM : BaseViewModel
                 });
             }
 
+            if (voucherInDb != null)
+            {
+                voucherInDb.Quantity = Math.Max(0, (voucherInDb.Quantity ?? 0) - 1);
+            }
+
             context.SaveChanges();
             transaction.Commit();
 
             CartItems.Clear();
             SelectedCustomer = null;
             CustomerSearchText = string.Empty;
+            ClearVoucher();
             LoadData();
 
             MessageBox.Show(
-                $"Order #{order.OrderId} for {selectedCustomerName} was created successfully.\nTotal: {totalAmount:N0} VND",
+                $"Order #{order.OrderId} for {selectedCustomerName} was created successfully.\nTotal: {finalAmount:N0} VND",
                 "Checkout complete",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
@@ -709,8 +866,69 @@ public class StaffSalesPageVM : BaseViewModel
     {
         OnPropertyChanged(nameof(TotalQuantity));
         OnPropertyChanged(nameof(CartTotal));
+        OnPropertyChanged(nameof(VoucherDiscountAmount));
+        OnPropertyChanged(nameof(VoucherDiscountDisplay));
+        OnPropertyChanged(nameof(FinalCartTotal));
+        OnPropertyChanged(nameof(FinalCartTotalDisplay));
         OnPropertyChanged(nameof(HasCartItems));
         OnPropertyChanged(nameof(CanCheckout));
         CommandManager.InvalidateRequerySuggested();
+    }
+
+    private static decimal CalculateVoucherDiscount(decimal cartTotal, Voucher? voucher)
+    {
+        if (voucher == null || cartTotal <= 0)
+        {
+            return 0m;
+        }
+
+        var discountValue = voucher.DiscountValue ?? 0m;
+        if (discountValue <= 0)
+        {
+            return 0m;
+        }
+
+        decimal discountAmount;
+        if (string.Equals(voucher.DiscountType, "PERCENT", StringComparison.OrdinalIgnoreCase))
+        {
+            discountAmount = cartTotal * discountValue / 100m;
+        }
+        else
+        {
+            discountAmount = discountValue;
+        }
+
+        return Math.Min(cartTotal, Math.Max(0m, discountAmount));
+    }
+
+    private static string? ValidateVoucher(Voucher? voucher)
+    {
+        if (voucher == null)
+        {
+            return "Voucher not found.";
+        }
+
+        if (voucher.IsActive != true)
+        {
+            return "This voucher is inactive.";
+        }
+
+        var today = DateTime.Today;
+        if (voucher.StartDate.HasValue && today < voucher.StartDate.Value.Date)
+        {
+            return $"This voucher will be active from {voucher.StartDate.Value:dd/MM/yyyy}.";
+        }
+
+        if (voucher.EndDate.HasValue && today > voucher.EndDate.Value.Date)
+        {
+            return $"This voucher expired on {voucher.EndDate.Value:dd/MM/yyyy}.";
+        }
+
+        if ((voucher.Quantity ?? 0) <= 0)
+        {
+            return "This voucher has no remaining quantity.";
+        }
+
+        return null;
     }
 }

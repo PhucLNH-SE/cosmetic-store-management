@@ -18,7 +18,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         public ICollectionView voucherView { get; set; }
 
-        private Voucher _textboxitem = new Voucher();
+        private Voucher _textboxitem = CreateDefaultVoucher();
         public Voucher textboxitem
         {
             get => _textboxitem;
@@ -48,6 +48,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
                         DiscountValue = _selecteditem.DiscountValue,
                         StartDate = _selecteditem.StartDate,
                         EndDate = _selecteditem.EndDate,
+                        Quantity = _selecteditem.Quantity,
                         IsActive = _selecteditem.IsActive
                     };
 
@@ -114,6 +115,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
                 DiscountValue = textboxitem.DiscountValue,
                 StartDate = textboxitem.StartDate,
                 EndDate = textboxitem.EndDate,
+                Quantity = textboxitem.Quantity,
                 IsActive = textboxitem.IsActive
             };
 
@@ -140,6 +142,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
                 voucher.DiscountValue = textboxitem.DiscountValue;
                 voucher.StartDate = textboxitem.StartDate;
                 voucher.EndDate = textboxitem.EndDate;
+                voucher.Quantity = textboxitem.Quantity;
                 voucher.IsActive = textboxitem.IsActive;
 
                 context.SaveChanges();
@@ -149,6 +152,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
                 selecteditem.DiscountValue = textboxitem.DiscountValue;
                 selecteditem.StartDate = textboxitem.StartDate;
                 selecteditem.EndDate = textboxitem.EndDate;
+                selecteditem.Quantity = textboxitem.Quantity;
                 selecteditem.IsActive = textboxitem.IsActive;
 
                 voucherView.Refresh();
@@ -182,7 +186,7 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         void ClearForm()
         {
-            textboxitem = new Voucher();
+            textboxitem = CreateDefaultVoucher();
             selecteditem = null;
 
             OnPropertyChanged(nameof(textboxitem));
@@ -244,7 +248,24 @@ namespace CosmeticStoreManagement.ViewModels.Admin
                 return false;
             }
 
+            if ((textboxitem.Quantity ?? 0) <= 0)
+            {
+                MessageBox.Show("Voucher quantity must be greater than zero.");
+                return false;
+            }
+
             return true;
+        }
+
+        static Voucher CreateDefaultVoucher()
+        {
+            return new Voucher
+            {
+                IsActive = true,
+                Quantity = 1,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddDays(7)
+            };
         }
     }
 }

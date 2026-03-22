@@ -11,6 +11,7 @@ public partial class StaffWindow : Window
     private StaffCustomerPage? _customerPage;
     private StaffOrdersPage? _ordersPage;
     private StaffFeedbackPage? _feedbackPage;
+    private StaffVoucherPage? _voucherPage;
 
     public StaffWindow()
     {
@@ -46,7 +47,7 @@ public partial class StaffWindow : Window
 
     private void Voucher_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Voucher page coming soon.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        OpenVoucherPage();
     }
 
     private void Payment_Click(object sender, RoutedEventArgs e)
@@ -137,6 +138,28 @@ public partial class StaffWindow : Window
         {
             MessageBox.Show(
                 $"Unable to open the feedback page.\n{ex.Message}",
+                "Staff page error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+    }
+
+    private void OpenVoucherPage()
+    {
+        try
+        {
+            _voucherPage ??= new StaffVoucherPage();
+            _voucherPage.RefreshData();
+
+            if (!ReferenceEquals(mainFrame.Content, _voucherPage))
+            {
+                mainFrame.Navigate(_voucherPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to open the voucher page.\n{ex.Message}",
                 "Staff page error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);

@@ -17,6 +17,8 @@ public partial class Voucher : ICloneable
 
     public DateTime? EndDate { get; set; }
 
+    public int? Quantity { get; set; }
+
     public bool? IsActive { get; set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
@@ -31,6 +33,7 @@ public partial class Voucher : ICloneable
             DiscountValue = this.DiscountValue,
             StartDate = this.StartDate,
             EndDate = this.EndDate,
+            Quantity = this.Quantity,
             IsActive = this.IsActive
         };
     }
