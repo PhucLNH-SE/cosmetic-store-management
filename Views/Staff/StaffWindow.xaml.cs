@@ -8,6 +8,7 @@ namespace CosmeticStoreManagement.Views.Staff;
 public partial class StaffWindow : Window
 {
     private StaffSalesPage? _salesPage;
+    private StaffProductPage? _productPage;
     private StaffCustomerPage? _customerPage;
     private StaffOrdersPage? _ordersPage;
     private StaffFeedbackPage? _feedbackPage;
@@ -27,12 +28,7 @@ public partial class StaffWindow : Window
 
     private void Products_Click(object sender, RoutedEventArgs e)
     {
-        OpenSalesPage();
-    }
-
-    private void Cart_Click(object sender, RoutedEventArgs e)
-    {
-        OpenSalesPage();
+        OpenProductPage();
     }
 
     private void Feedback_Click(object sender, RoutedEventArgs e)
@@ -85,6 +81,28 @@ public partial class StaffWindow : Window
         {
             MessageBox.Show(
                 $"Unable to open the sales page.\n{ex.Message}",
+                "Staff page error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
+    }
+
+    private void OpenProductPage()
+    {
+        try
+        {
+            _productPage ??= new StaffProductPage();
+            _productPage.RefreshData();
+
+            if (!ReferenceEquals(mainFrame.Content, _productPage))
+            {
+                mainFrame.Navigate(_productPage);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Unable to open the product page.\n{ex.Message}",
                 "Staff page error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
