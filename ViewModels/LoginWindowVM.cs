@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -6,6 +6,9 @@ using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
 using CosmeticStoreManagement.Views;
+using CosmeticStoreManagement.Views.Admin;
+using CosmeticStoreManagement.Views.Staff;
+
 
 namespace CosmeticStoreManagement.ViewModels;
 

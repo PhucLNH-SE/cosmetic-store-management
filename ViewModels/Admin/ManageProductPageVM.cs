@@ -1,4 +1,4 @@
-﻿using CosmeticStoreManagement.Data;
+using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
 using Microsoft.Win32;
@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace CosmeticStoreManagement.ViewModels.admin
+namespace CosmeticStoreManagement.ViewModels.Admin
 {
     public class ProductItemDisplay : BaseViewModel
     {
@@ -109,12 +109,12 @@ namespace CosmeticStoreManagement.ViewModels.admin
             set { _searchtext = value; OnPropertyChanged(); }
         }
 
-        // --- ĐÂY LÀ PHẦN SỬA LỖI ADD XONG TÀNG HÌNH ---
+        // --- ��Y L� PH?N S?A L?I ADD XONG T�NG H�NH ---
         private ICollectionView _productsView;
         public ICollectionView ProductsView
         {
             get => _productsView;
-            set { _productsView = value; OnPropertyChanged(); } // Báo cho UI biết để F5
+            set { _productsView = value; OnPropertyChanged(); } // B�o cho UI bi?t d? F5
         }
         // ----------------------------------------------
 
@@ -257,7 +257,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
 
             string destFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images", "Products");
 
-            // Nếu ảnh đã nằm trong thư mục project rồi thì không cần copy nữa
+            // N?u ?nh d� n?m trong thu m?c project r?i th� kh�ng c?n copy n?a
             if (sourcePath.Contains(destFolder)) return sourcePath;
 
             try
@@ -276,7 +276,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi copy ảnh: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("L?i copy ?nh: " + ex.Message, "L?i", MessageBoxButton.OK, MessageBoxImage.Error);
                 return string.Empty;
             }
         }
@@ -285,13 +285,13 @@ namespace CosmeticStoreManagement.ViewModels.admin
         {
             if (textboxitem.CategoryId == 0 || textboxitem.BrandId == 0)
             {
-                MessageBox.Show("Vui lòng chọn Danh mục và Thương hiệu!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui l�ng ch?n Danh m?c v� Thuong hi?u!", "Thi?u th�ng tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(textboxitem.Volume))
             {
-                MessageBox.Show("Vui lòng nhập dung tích/loại sản phẩm!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui l�ng nh?p dung t�ch/lo?i s?n ph?m!", "Thi?u th�ng tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -305,7 +305,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                         p.BrandId == textboxitem.BrandId &&
                         p.CategoryId == textboxitem.CategoryId))
                     {
-                        MessageBox.Show("Sản phẩm này đã tồn tại trong cùng thương hiệu và danh mục!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("S?n ph?m n�y d� t?n t?i trong c�ng thuong hi?u v� danh m?c!", "C?nh b�o", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -336,11 +336,11 @@ namespace CosmeticStoreManagement.ViewModels.admin
                     context.ProductVariants.Add(newV);
                     context.SaveChanges();
 
-                    MessageBox.Show("Thêm mới thành công!");
+                    MessageBox.Show("Th�m m?i th�nh c�ng!");
                     textboxitem = new ProductItemDisplay();
                     LoadData();
                 }
-                catch (Exception ex) { MessageBox.Show("Lỗi Database: " + ex.Message); }
+                catch (Exception ex) { MessageBox.Show("L?i Database: " + ex.Message); }
             }
         }
 
@@ -355,7 +355,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                     v.Volume.ToLower() == normalizedVolume);
                 if (isExist)
                 {
-                    MessageBox.Show("Dung tích này đã tồn tại!");
+                    MessageBox.Show("Dung t�ch n�y d� t?n t?i!");
                     return;
                 }
 
@@ -384,7 +384,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
 
                 context.SaveChanges();
 
-                MessageBox.Show($"Thêm loại {textboxitem.Volume} thành công!");
+                MessageBox.Show($"Th�m lo?i {textboxitem.Volume} th�nh c�ng!");
                 LoadData();
             }
         }
@@ -399,7 +399,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                 {
                     if (string.IsNullOrWhiteSpace(textboxitem.ProductName) || string.IsNullOrWhiteSpace(textboxitem.Volume))
                     {
-                        MessageBox.Show("Tên sản phẩm và dung tích không được để trống!", "Thiếu thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("T�n s?n ph?m v� dung t�ch kh�ng du?c d? tr?ng!", "Thi?u th�ng tin", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -411,7 +411,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                         prod.CategoryId == textboxitem.CategoryId);
                     if (duplicatedProduct)
                     {
-                        MessageBox.Show("Đã tồn tại sản phẩm khác cùng tên, thương hiệu và danh mục!", "Trùng dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("�� t?n t?i s?n ph?m kh�c c�ng t�n, thuong hi?u v� danh m?c!", "Tr�ng d? li?u", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -423,7 +423,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                         variant.Volume.ToLower() == normalizedVolume);
                     if (duplicatedVariant)
                     {
-                        MessageBox.Show("Dung tích này đã tồn tại cho sản phẩm hiện tại!", "Trùng dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show("Dung t�ch n�y d� t?n t?i cho s?n ph?m hi?n t?i!", "Tr�ng d? li?u", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -440,7 +440,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                     }
 
                     context.SaveChanges();
-                    MessageBox.Show("Cập nhật thành công!");
+                    MessageBox.Show("C?p nh?t th�nh c�ng!");
                     LoadData();
                 }
             }
@@ -455,7 +455,7 @@ namespace CosmeticStoreManagement.ViewModels.admin
                 {
                     p.IsActive = !(p.IsActive ?? false);
                     context.SaveChanges();
-                    MessageBox.Show(p.IsActive == true ? "Đã hiện sản phẩm!" : "Đã ẩn sản phẩm!");
+                    MessageBox.Show(p.IsActive == true ? "�� hi?n s?n ph?m!" : "�� ?n s?n ph?m!");
                     LoadData();
                 }
             }

@@ -1,7 +1,7 @@
 using System.Windows.Controls;
-using CosmeticStoreManagement.ViewModels;
+using CosmeticStoreManagement.ViewModels.Staff;
 
-namespace CosmeticStoreManagement.Views.Pages;
+namespace CosmeticStoreManagement.Views.Staff;
 
 public partial class StaffCustomerPage : Page
 {

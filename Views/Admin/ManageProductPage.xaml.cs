@@ -1,8 +1,7 @@
-﻿using CosmeticStoreManagement.ViewModels;
-using CosmeticStoreManagement.ViewModels.admin;
+using CosmeticStoreManagement.ViewModels.Admin;
 using System.Windows.Controls;
 
-namespace CosmeticStoreManagement.Views
+namespace CosmeticStoreManagement.Views.Admin
 {
     public partial class ManageProductPage : Page
     {

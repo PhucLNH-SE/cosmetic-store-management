@@ -1,6 +1,6 @@
 using CosmeticStoreManagement.Models;
 
-namespace CosmeticStoreManagement.ViewModels;
+namespace CosmeticStoreManagement.ViewModels.Staff;
 
 public class StaffCartLineVM : BaseViewModel
 {

@@ -1,5 +1,5 @@
-﻿using System.Windows.Controls;
-using CosmeticStoreManagement.ViewModels;
+using System.Windows.Controls;
+using CosmeticStoreManagement.ViewModels.Admin;
 
 namespace CosmeticStoreManagement.Views.Admin;
 
