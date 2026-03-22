@@ -4,23 +4,472 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Title="ManageImportProductPage">
-    <Grid Background="#FFF9F6F2">
-        <Border Background="#FFF1E2D4"
-                CornerRadius="24"
-                Padding="28"
-                Margin="8">
-            <StackPanel VerticalAlignment="Center">
-                <TextBlock Text="Manage Import Product"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           Foreground="#FF4A2E1E"/>
-                <TextBlock Text="Import product page placeholder. Import order forms and history can be built here."
-                           Margin="0,14,0,0"
-                           FontSize="16"
-                           Foreground="#FF6F5547"
-                           TextWrapping="Wrap"/>
-            </StackPanel>
-        </Border>
-    </Grid>
+      Title="ManageImportProductPage"
+      Background="#FFF9F6F2">
+    <Page.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#FFFCFAF7"/>
+            <Setter Property="BorderBrush" Value="#FFD9C8BB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FFF2E4D8"/>
+            <Setter Property="Foreground" Value="#FF5A4133"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderBrush" Value="#FFF2E4D8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF1E2D6"/>
+                    <Setter Property="Foreground" Value="#FF4A2E1E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#FF4A2E1E"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="48"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF1E2D6"/>
+                    <Setter Property="Foreground" Value="#FF4A2E1E"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF7EDE5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Padding="18"
+                    Background="#FFF3E4D7"
+                    BorderBrush="#FFE3D7CD"
+                    BorderThickness="1"
+                    CornerRadius="24"
+                    Margin="0,0,0,12">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Manage Import Product"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#FF4A2E1E"/>
+                        <TextBlock Text="Create import orders, increase stock for selected variants, and review recent import history."
+                                   Margin="0,8,0,0"
+                                   Foreground="#FF7A6254"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Width="110"
+                            Height="38"
+                            Content="REFRESH"
+                            Background="#FF5C7A57"
+                            Style="{StaticResource RoundedButtonStyle}"
+                            Command="{Binding RefreshCommand}"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.28*"/>
+                    <ColumnDefinition Width="0.92*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0"
+                        Margin="0,0,12,0"
+                        Padding="16"
+                        Background="White"
+                        BorderBrush="#FFE3D7CD"
+                        BorderThickness="1"
+                        CornerRadius="24">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Available Variants"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#FF4A2E1E"/>
+                                <TextBlock Text="Choose one product variant to add into the current import draft."
+                                           Margin="0,4,0,0"
+                                           Foreground="#FF7A6254"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="1"
+                                    Background="#FFF2E4D8"
+                                    CornerRadius="14"
+                                    Padding="14,8"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding TotalVariants, StringFormat=Total: {0}}"
+                                           FontWeight="Bold"
+                                           Foreground="#FF6F4D3B"/>
+                            </Border>
+                        </Grid>
+
+                        <TextBox Grid.Row="1"
+                                 Margin="0,0,0,12"
+                                 Style="{StaticResource RoundedTextBoxStyle}"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Border Grid.Row="2"
+                                MinHeight="420"
+                                Background="#FFFDFBFA"
+                                BorderBrush="#FFEDDFD5"
+                                BorderThickness="1"
+                                CornerRadius="18"
+                                Padding="10">
+                            <DataGrid ItemsSource="{Binding AvailableVariantsView}"
+                                      SelectedItem="{Binding SelectedVariant}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      AlternatingRowBackground="#FFF9F2EC"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                      CellStyle="{StaticResource DataGridCellStyle}"
+                                      RowStyle="{StaticResource DataGridRowStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="1.8*"/>
+                                    <DataGridTextColumn Header="Brand" Binding="{Binding BrandName}" Width="1.1*"/>
+                                    <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="1.1*"/>
+                                    <DataGridTextColumn Header="Variant" Binding="{Binding Volume}" Width="0.9*"/>
+                                    <DataGridTextColumn Header="Stock" Binding="{Binding StockQuantity}" Width="0.8*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Padding="16"
+                        Background="#FFF4E8DE"
+                        BorderBrush="#FFE3D7CD"
+                        BorderThickness="1"
+                        CornerRadius="24">
+                    <StackPanel>
+                        <TextBlock Text="Current Import Draft"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#FF4A2E1E"/>
+                        <TextBlock Text="{Binding SelectedVariantSummary}"
+                                   Margin="0,8,0,8"
+                                   Foreground="#FF7A6254"
+                                   TextWrapping="Wrap"/>
+
+                        <Border Background="#FFF0F7F0"
+                                BorderBrush="#FFD2E5D2"
+                                BorderThickness="1"
+                                CornerRadius="14"
+                                Padding="10"
+                                Margin="0,0,0,14">
+                            <TextBlock Text="{Binding ImportFlowNote}"
+                                       Foreground="#FF4F6E4F"
+                                       TextWrapping="Wrap"/>
+                        </Border>
+
+                        <TextBlock Text="Quantity" FontWeight="Bold" Foreground="#FF5C463A"/>
+                        <TextBox Margin="0,8,0,12"
+                                 Style="{StaticResource RoundedTextBoxStyle}"
+                                 Text="{Binding ImportQuantity, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Text="Import Price" FontWeight="Bold" Foreground="#FF5C463A"/>
+                        <TextBox Margin="0,8,0,6"
+                                 Style="{StaticResource RoundedTextBoxStyle}"
+                                 Text="{Binding ImportPrice, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Text="Import price must be greater than 0 to add a draft line."
+                                   Margin="0,0,0,12"
+                                   Foreground="#FF8A5D46"
+                                   TextWrapping="Wrap"/>
+
+                        <Border Background="#FFF8EEE7"
+                                BorderBrush="#FFE3CFC0"
+                                BorderThickness="1"
+                                CornerRadius="14"
+                                Padding="12"
+                                Margin="0,0,0,12">
+                            <StackPanel>
+                                <TextBlock Text="{Binding PreviewLineTotal, StringFormat=Preview line total: {0:N0} VND}"
+                                           FontWeight="Bold"
+                                           Foreground="#FF6F4D3B"/>
+                                <TextBlock Text="{Binding StatusMessage}"
+                                           Margin="0,8,0,0"
+                                           Foreground="#FF7A6254"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
+                                    Content="ADD LINE"
+                                    Margin="0,0,8,0"
+                                    Background="#FF8A5536"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Command="{Binding AddToDraftCommand}"/>
+                            <Button Grid.Column="1"
+                                    Content="REMOVE"
+                                    Margin="8,0,8,0"
+                                    Background="#FFB0713D"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Command="{Binding RemoveDraftLineCommand}"/>
+                            <Button Grid.Column="2"
+                                    Content="CLEAR"
+                                    Margin="8,0,0,0"
+                                    Background="#FF6C7A87"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Command="{Binding ClearDraftCommand}"/>
+                        </Grid>
+
+                        <Border Background="White"
+                                BorderBrush="#FFF0E4DA"
+                                BorderThickness="1"
+                                CornerRadius="16"
+                                Padding="10"
+                                Margin="0,0,0,12"
+                                Height="220">
+                            <DataGrid ItemsSource="{Binding DraftLines}"
+                                      SelectedItem="{Binding SelectedDraftLine}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      AlternatingRowBackground="#FFF9F2EC"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                      CellStyle="{StaticResource DataGridCellStyle}"
+                                      RowStyle="{StaticResource DataGridRowStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="1.6*"/>
+                                    <DataGridTextColumn Header="Variant" Binding="{Binding Volume}" Width="0.8*"/>
+                                    <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="0.6*"/>
+                                    <DataGridTextColumn Header="Price" Binding="{Binding ImportPrice, StringFormat={}{0:N0}}" Width="0.9*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+
+                        <DockPanel Margin="0,0,0,8">
+                            <TextBlock Text="{Binding DraftItemCount, StringFormat=Items: {0}}"
+                                       FontWeight="SemiBold"
+                                       Foreground="#FF5C463A"/>
+                            <TextBlock DockPanel.Dock="Right"
+                                       Text="{Binding DraftTotalCost, StringFormat=Total cost: {0:N0} VND}"
+                                       FontWeight="Bold"
+                                       Foreground="#FF3F6E54"/>
+                        </DockPanel>
+
+                        <Button Content="SAVE IMPORT ORDER"
+                                Height="40"
+                                Background="#FF5C7A57"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding SaveImportCommand}"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Grid.Row="2"
+                    Padding="16"
+                    Background="White"
+                    BorderBrush="#FFE3D7CD"
+                    BorderThickness="1"
+                    CornerRadius="24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.1*"/>
+                        <ColumnDefinition Width="0.9*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Margin="0,0,12,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="Recent Import History"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="#FF4A2E1E"/>
+                            <TextBlock Text="Latest import orders created in the system."
+                                       Margin="0,4,0,0"
+                                       Foreground="#FF7A6254"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1"
+                                MinHeight="300"
+                                Background="#FFFDFBFA"
+                                BorderBrush="#FFEDDFD5"
+                                BorderThickness="1"
+                                CornerRadius="18"
+                                Padding="10">
+                            <DataGrid ItemsSource="{Binding ImportHistory}"
+                                      SelectedItem="{Binding SelectedHistoryItem}"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      IsReadOnly="True"
+                                      AlternatingRowBackground="#FFF9F2EC"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                      CellStyle="{StaticResource DataGridCellStyle}"
+                                      RowStyle="{StaticResource DataGridRowStyle}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Import ID" Binding="{Binding ImportId}" Width="0.8*"/>
+                                    <DataGridTextColumn Header="Date" Binding="{Binding ImportDate, StringFormat=dd/MM/yyyy HH:mm}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="Created By" Binding="{Binding CreatedBy}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="Items" Binding="{Binding TotalItems}" Width="0.7*"/>
+                                    <DataGridTextColumn Header="Total Cost" Binding="{Binding TotalCost, StringFormat={}{0:N0}}" Width="1.1*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+
+                    <Border Grid.Column="1"
+                            Background="#FFF4E8DE"
+                            BorderBrush="#FFE3D7CD"
+                            BorderThickness="1"
+                            CornerRadius="20"
+                            Padding="16">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Margin="0,0,0,12">
+                                <TextBlock Text="Import Details"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Foreground="#FF4A2E1E"/>
+                                <TextBlock Text="{Binding SelectedHistorySummary}"
+                                           Margin="0,4,0,0"
+                                           Foreground="#FF7A6254"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <Border Grid.Row="1"
+                                    MinHeight="300"
+                                    Background="White"
+                                    BorderBrush="#FFF0E4DA"
+                                    BorderThickness="1"
+                                    CornerRadius="16"
+                                    Padding="10">
+                                <DataGrid ItemsSource="{Binding SelectedHistoryDetails}"
+                                          AutoGenerateColumns="False"
+                                          CanUserAddRows="False"
+                                          IsReadOnly="True"
+                                          AlternatingRowBackground="#FFF9F2EC"
+                                          GridLinesVisibility="Horizontal"
+                                          HeadersVisibility="Column"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                          CellStyle="{StaticResource DataGridCellStyle}"
+                                          RowStyle="{StaticResource DataGridRowStyle}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Product" Binding="{Binding ProductName}" Width="1.4*"/>
+                                        <DataGridTextColumn Header="Variant" Binding="{Binding Volume}" Width="0.8*"/>
+                                        <DataGridTextColumn Header="Qty" Binding="{Binding Quantity}" Width="0.6*"/>
+                                        <DataGridTextColumn Header="Price" Binding="{Binding ImportPrice, StringFormat={}{0:N0}}" Width="0.9*"/>
+                                        <DataGridTextColumn Header="Line Total" Binding="{Binding LineTotal, StringFormat={}{0:N0}}" Width="1*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </Page>

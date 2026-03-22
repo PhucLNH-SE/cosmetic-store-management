@@ -31,8 +31,8 @@
 
         <Style x:Key="FilterComboBoxStyle" TargetType="ComboBox">
             <Setter Property="MinWidth" Value="170"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="10,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#FFD9E4DB"/>
@@ -41,8 +41,8 @@
 
         <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
             <Setter Property="MinWidth" Value="250"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Padding" Value="12,4"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="12,3"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#FFD9E4DB"/>
@@ -162,7 +162,8 @@
 
         <Border Grid.Row="0"
                 Style="{StaticResource CardStyle}"
-                Margin="0,0,0,18">
+                Margin="0,0,0,12"
+                Padding="18">
             <Border.Effect>
                 <DropShadowEffect Color="#22000000" BlurRadius="14" ShadowDepth="2"/>
             </Border.Effect>
@@ -171,12 +172,12 @@
                 <TextBlock Text="Counter Sales"
                            Style="{StaticResource SectionTitleStyle}"/>
                 <TextBlock Text="Choose the buyer, add product variants to the cart, update quantities, and checkout directly from the staff panel."
-                           Margin="0,6,0,18"
+                           Margin="0,4,0,12"
                            Foreground="#FF6B7F70"
                            TextWrapping="Wrap"/>
 
                 <WrapPanel>
-                    <StackPanel Margin="0,0,14,12">
+                    <StackPanel Margin="0,0,12,8">
                         <TextBlock Text="Brand" Style="{StaticResource FieldLabelStyle}"/>
                         <ComboBox ItemsSource="{Binding Brands}"
                                   SelectedItem="{Binding SelectedBrand}"
@@ -184,7 +185,7 @@
                                   Style="{StaticResource FilterComboBoxStyle}"/>
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,14,12">
+                    <StackPanel Margin="0,0,12,8">
                         <TextBlock Text="Category" Style="{StaticResource FieldLabelStyle}"/>
                         <ComboBox ItemsSource="{Binding Categories}"
                                   SelectedItem="{Binding SelectedCategory}"
@@ -192,14 +193,14 @@
                                   Style="{StaticResource FilterComboBoxStyle}"/>
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,14,12">
+                    <StackPanel Margin="0,0,12,8">
                         <TextBlock Text="Sort" Style="{StaticResource FieldLabelStyle}"/>
                         <ComboBox ItemsSource="{Binding SortOptions}"
                                   SelectedItem="{Binding SelectedSort}"
                                   Style="{StaticResource FilterComboBoxStyle}"/>
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,14,12">
+                    <StackPanel Margin="0,0,12,8">
                         <TextBlock Text="Search" Style="{StaticResource FieldLabelStyle}"/>
                         <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                                  Style="{StaticResource SearchTextBoxStyle}"/>
@@ -208,13 +209,14 @@
                     <Button Content="Clear filters"
                             Style="{StaticResource SecondaryButtonStyle}"
                             VerticalAlignment="Bottom"
-                            Margin="0,0,0,12"
+                            Height="36"
+                            Margin="0,0,0,8"
                             Click="ClearFilters_Click"/>
                 </WrapPanel>
 
                 <Border Background="#FFF7FAF7"
                         CornerRadius="12"
-                        Padding="14"
+                        Padding="12"
                         BorderBrush="#FFDCE8DE"
                         BorderThickness="1">
                     <Grid>
@@ -226,10 +228,11 @@
 
                         <StackPanel Grid.Column="0">
                             <TextBlock Text="Buyer"
-                                       Style="{StaticResource FieldLabelStyle}"/>
-                            <TextBlock Text="Type the customer name, then click the result below."
-                                       Margin="0,0,0,10"
+                                        Style="{StaticResource FieldLabelStyle}"/>
+                            <TextBlock Text="Type the customer name, then click a result."
+                                       Margin="0,0,0,6"
                                        Foreground="#FF708172"
+                                       FontSize="12"
                                        TextWrapping="Wrap"/>
                             <Grid>
                                 <TextBox x:Name="BuyerSearchTextBox"
@@ -287,7 +290,7 @@
                         <Border Grid.Column="2"
                                 Background="#FFEAF4EC"
                                 CornerRadius="10"
-                                Padding="12">
+                                Padding="10">
                             <Grid>
                                 <Grid Visibility="{Binding HasSelectedCustomer, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
@@ -301,7 +304,7 @@
                                                    Foreground="#FF244330"
                                                    TextWrapping="Wrap"/>
                                         <TextBlock Text="{Binding SelectedCustomerPhone}"
-                                                   Margin="0,4,0,0"
+                                                   Margin="0,3,0,0"
                                                    Foreground="#FF5F7462"/>
                                     </StackPanel>
                                 </Grid>
@@ -441,13 +444,8 @@
                         <TextBlock Text="Current Cart"
                                    Style="{StaticResource SectionTitleStyle}"/>
                         <TextBlock Text="Review selected items, update quantities, and checkout."
-                                   Margin="0,6,0,12"
+                                   Margin="0,6,0,8"
                                    Foreground="#FF6B7F70"
-                                   TextWrapping="Wrap"/>
-
-                        <TextBlock Text="Add items from the product table, then adjust quantity or remove lines here."
-                                   Margin="0,0,0,10"
-                                   Foreground="#FF607563"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
 
@@ -563,37 +561,105 @@
                     </ScrollViewer>
 
                     <Border Grid.Row="2"
-                            Margin="0,18,0,0"
-                            Padding="18"
+                            Margin="0,8,0,0"
+                            Padding="12"
                             CornerRadius="14"
                             Background="#FFF5F8F5">
                         <StackPanel>
-                            <DockPanel Margin="0,0,0,8">
-                                <TextBlock Text="Total quantity"
-                                           Foreground="#FF627365"/>
+                            <DockPanel Margin="0,0,0,4">
+                                <TextBlock Text="Voucher"
+                                           Foreground="#FF627365"
+                                           FontWeight="SemiBold"/>
                                 <TextBlock DockPanel.Dock="Right"
-                                           Text="{Binding TotalQuantity, StringFormat='{}{0} item(s)'}"
-                                           FontWeight="SemiBold"
-                                           Foreground="#FF244330"/>
+                                           Text="Optional"
+                                           Foreground="#FF8A988C"
+                                           FontSize="11"/>
                             </DockPanel>
 
-                            <DockPanel Margin="0,0,0,14">
-                                <TextBlock Text="Grand total"
-                                           FontSize="16"
+                            <Grid Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="84"/>
+                                    <ColumnDefinition Width="84"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0"
+                                         Style="{StaticResource SearchTextBoxStyle}"
+                                         MinWidth="0"
+                                         Height="32"
+                                         Text="{Binding VoucherCodeInput, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Button Grid.Column="1"
+                                        Margin="6,0,0,0"
+                                        Content="Apply"
+                                        Style="{StaticResource PrimaryButtonStyle}"
+                                        Padding="8,5"
+                                        Command="{Binding ApplyVoucherCommand}"/>
+                                <Button Grid.Column="2"
+                                        Margin="6,0,0,0"
+                                        Content="Clear"
+                                        Style="{StaticResource SecondaryButtonStyle}"
+                                        Padding="8,5"
+                                        Command="{Binding ClearVoucherCommand}"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="{Binding AppliedVoucherCode, StringFormat='Voucher: {0}'}"
+                                           Foreground="#FF627365"
+                                           Margin="0,0,8,4"/>
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="1"
+                                           Text="{Binding VoucherDiscountDisplay, StringFormat='Discount: {0}'}"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF3E6B48"
+                                           Margin="8,0,0,4"/>
+
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="{Binding TotalQuantity, StringFormat='Items: {0}'}"
+                                           Foreground="#FF627365"
+                                           Margin="0,0,8,4"/>
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="1"
+                                           Text="{Binding CartTotal, StringFormat='Total: {0:N0} VND'}"
+                                           HorizontalAlignment="Right"
+                                           FontWeight="SemiBold"
+                                           Foreground="#FF627365"
+                                           Margin="8,0,0,4"/>
+
+                                <TextBlock Grid.Row="2"
+                                           Grid.Column="0"
+                                           Text="Final total"
+                                           FontSize="14"
                                            FontWeight="Bold"
                                            Foreground="#FF244330"/>
-                                <TextBlock DockPanel.Dock="Right"
-                                           Text="{Binding CartTotal, StringFormat='{}{0:N0} VND'}"
-                                           FontSize="18"
+                                <TextBlock Grid.Row="2"
+                                           Grid.Column="1"
+                                           Text="{Binding FinalCartTotalDisplay}"
+                                           HorizontalAlignment="Right"
+                                           FontSize="15"
                                            FontWeight="Bold"
                                            Foreground="#FF3E6B48"/>
-                            </DockPanel>
+                            </Grid>
 
                             <Button Content="Checkout"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Command="{Binding CheckoutCommand}"
                                     IsEnabled="{Binding CanCheckout}"
-                                    Height="42"/>
+                                    Height="34"
+                                    Padding="12,6"/>
                         </StackPanel>
                     </Border>
                 </Grid>

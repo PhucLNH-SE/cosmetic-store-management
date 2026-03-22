@@ -4,119 +4,439 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d"
-      Title="ManageProductPage">
-    <Grid Background="#FFF9F6F2">
-        <Border Background="#FFF3E8DE"
-                CornerRadius="24"
-                Padding="28"
-                Margin="8">
+      Title="ManageProductPage"
+      Background="#FFF9F6F2">
+    <Page.Resources>
+        <Style x:Key="RoundedButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#FFFCFAF7"/>
+            <Setter Property="BorderBrush" Value="#FFD9C8BB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Background" Value="#FFFCFAF7"/>
+            <Setter Property="BorderBrush" Value="#FFD9C8BB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#FFF2E4D8"/>
+            <Setter Property="Foreground" Value="#FF5A4133"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderBrush" Value="#FFF2E4D8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10,10,0,0"
+                                Padding="10,8">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF1E2D6"/>
+                    <Setter Property="Foreground" Value="#FF4A2E1E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#FF4A2E1E"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Height" Value="54"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FFF1E2D6"/>
+                    <Setter Property="Foreground" Value="#FF4A2E1E"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF7EDE5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.38*"/>
+            <ColumnDefinition Width="0.92*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Margin="10,10,14,10"
+                Padding="18"
+                Background="White"
+                BorderBrush="#FFE3D7CD"
+                BorderThickness="1"
+                CornerRadius="24">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Manage Product"
-                           FontSize="30"
-                           FontWeight="Bold"
-                           Foreground="#FF4A2E1E"
-                           Margin="0,0,0,20"/>
+                <StackPanel>
+                    <TextBlock Text="Manage Product"
+                               FontSize="28"
+                               FontWeight="Bold"
+                               Foreground="#FF4A2E1E"/>
+                    <TextBlock Text="Create products, manage variants, update pricing, and review item visibility."
+                               Margin="0,8,0,18"
+                               FontSize="14"
+                               Foreground="#FF7A6254"/>
+                </StackPanel>
 
-                <Grid Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="6*" />
-                        <ColumnDefinition Width="4*" />
-                    </Grid.ColumnDefinitions>
+                <Border Grid.Row="1"
+                        Margin="0,6,0,0"
+                        Background="#FFFDFBFA"
+                        BorderBrush="#FFEDDFD5"
+                        BorderThickness="1"
+                        CornerRadius="22"
+                        Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="10" Margin="0,0,15,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+                        <Grid Margin="4,2,4,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                                <TextBlock Text="Search:" VerticalAlignment="Center" FontWeight="Bold" Foreground="#FF6F5547" Margin="0,0,10,0"/>
-                                <TextBox Text="{Binding searchtext, UpdateSourceTrigger=PropertyChanged}" Width="200" Padding="5" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <Button Content="Search" Command="{Binding SearchCommand}" Width="70" Padding="5" Background="#FF6B4736" Foreground="White" BorderThickness="0" Cursor="Hand"/>
+                            <StackPanel>
+                                <TextBlock Text="Product Variants List"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="#FF4A2E1E"/>
+                                <TextBlock Text="Select one row to load product data into the form."
+                                           Margin="0,4,0,0"
+                                           Foreground="#FF7A6254"/>
                             </StackPanel>
 
-                            <DataGrid Grid.Row="1" 
-                                      ItemsSource="{Binding ProductsView}" 
+                            <Border Grid.Column="1"
+                                    Background="#FFF2E4D8"
+                                    CornerRadius="14"
+                                    Padding="14,8"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="{Binding products.Count, StringFormat=Total: {0}}"
+                                           FontWeight="Bold"
+                                           Foreground="#FF6F4D3B"/>
+                            </Border>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="4,0,4,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     Margin="0,0,10,0"
+                                     Style="{StaticResource RoundedTextBoxStyle}"
+                                     Text="{Binding searchtext, UpdateSourceTrigger=PropertyChanged}"/>
+                            <Button Grid.Column="1"
+                                    Content="SEARCH"
+                                    Background="#FF5C7A57"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Command="{Binding SearchCommand}"/>
+                        </Grid>
+
+                        <Border Grid.Row="2"
+                                Background="White"
+                                CornerRadius="18"
+                                BorderBrush="#FFF0E4DA"
+                                BorderThickness="1"
+                                ClipToBounds="True">
+                            <DataGrid ItemsSource="{Binding ProductsView}"
                                       SelectedItem="{Binding selecteditem, Mode=OneWayToSource}"
-                                      AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                                      Background="Transparent" BorderThickness="0" 
-                                      RowBackground="White" AlternatingRowBackground="#FFF9F6F2"
-                                      HeadersVisibility="Column">
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      IsReadOnly="True"
+                                      SelectionMode="Single"
+                                      AlternatingRowBackground="#FFF9F2EC"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      Background="Transparent"
+                                      BorderThickness="0"
+                                      ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                      CellStyle="{StaticResource DataGridCellStyle}"
+                                      RowStyle="{StaticResource DataGridRowStyle}">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" />
-                                    <DataGridTemplateColumn Header="Image">
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ProductId}" Width="0.55*"/>
+                                    <DataGridTemplateColumn Header="Image" Width="0.9*">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <Image Source="{Binding ImagePath}" Width="50" Height="50" Stretch="UniformToFill"/>
+                                                <Border Width="44"
+                                                        Height="44"
+                                                        CornerRadius="10"
+                                                        Background="#FFF5EEE8"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center">
+                                                    <Image Source="{Binding ImagePath}"
+                                                           Stretch="UniformToFill">
+                                                        <Image.Clip>
+                                                            <RectangleGeometry Rect="0,0,44,44" RadiusX="10" RadiusY="10"/>
+                                                        </Image.Clip>
+                                                    </Image>
+                                                </Border>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*"/>
-
-                                    <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" />
-                                    <DataGridTextColumn Header="Brand" Binding="{Binding BrandName}" />
-
-                                    <DataGridTextColumn Header="Type" Binding="{Binding Volume}" Width="60"/>
-                                    <DataGridTextColumn Header="Price" Binding="{Binding Price}" />
-                                    <DataGridTextColumn Header="Status" Binding="{Binding IsActive}" />
+                                    <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="1.8*"/>
+                                    <DataGridTextColumn Header="Category" Binding="{Binding CategoryName}" Width="1.1*"/>
+                                    <DataGridTextColumn Header="Brand" Binding="{Binding BrandName}" Width="1.1*"/>
+                                    <DataGridTextColumn Header="Variant" Binding="{Binding Volume}" Width="0.8*"/>
+                                    <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}{0:N0}}" Width="0.9*"/>
+                                    <DataGridTemplateColumn Header="Status" Width="0.9*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock x:Name="ProductStatusText"
+                                                           Text="Visible"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="#FF426247"/>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                        <Setter TargetName="ProductStatusText" Property="Text" Value="Hidden"/>
+                                                        <Setter TargetName="ProductStatusText" Property="Foreground" Value="#FF8A4C45"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1"
+                Margin="0,10,10,10"
+                Padding="18"
+                Background="#FFF4E8DE"
+                BorderBrush="#FFE3D7CD"
+                BorderThickness="1"
+                CornerRadius="24">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="Product Form"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               Foreground="#FF4A2E1E"/>
+                    <TextBlock Text="Add a new product, create another variant for the selected product, or update the chosen row."
+                               Margin="0,8,0,18"
+                               Foreground="#FF7A6254"
+                               TextWrapping="Wrap"/>
+
+                    <TextBlock Text="Product Name" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <TextBox Margin="0,8,0,14"
+                             Style="{StaticResource RoundedTextBoxStyle}"
+                             Text="{Binding textboxitem.ProductName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Variant / Volume" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <TextBox Margin="0,8,0,14"
+                             Style="{StaticResource RoundedTextBoxStyle}"
+                             Text="{Binding textboxitem.Volume, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Price" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <TextBox Margin="0,8,0,14"
+                             Style="{StaticResource RoundedTextBoxStyle}"
+                             Text="{Binding textboxitem.Price, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Category" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <ComboBox Margin="0,8,0,14"
+                              Style="{StaticResource RoundedComboBoxStyle}"
+                              ItemsSource="{Binding CategoriesList}"
+                              DisplayMemberPath="CategoryName"
+                              SelectedValuePath="CategoryId"
+                              SelectedValue="{Binding textboxitem.CategoryId, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Brand" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <ComboBox Margin="0,8,0,14"
+                              Style="{StaticResource RoundedComboBoxStyle}"
+                              ItemsSource="{Binding BrandsList}"
+                              DisplayMemberPath="BrandName"
+                              SelectedValuePath="BrandId"
+                              SelectedValue="{Binding textboxitem.BrandId, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Product Image" FontWeight="Bold" Foreground="#FF5C463A"/>
+                    <Grid Margin="0,8,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="110"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                Content="BROWSE"
+                                Background="#FFB0713D"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding ChooseImageCommand}"/>
+                        <TextBlock Grid.Column="1"
+                                   Margin="12,0,0,0"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding textboxitem.ImagePath}"
+                                   TextTrimming="CharacterEllipsis"
+                                   Foreground="#FF7A6254"/>
+                    </Grid>
+
+                    <Border Margin="0,0,0,18"
+                            Height="140"
+                            Background="#FFFCF7F2"
+                            BorderBrush="#FFE1CFC2"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            Padding="12">
+                        <Grid>
+                            <Image Source="{Binding textboxitem.ImagePath}"
+                                   Stretch="Uniform"/>
+                            <TextBlock Text="Image preview"
+                                       Foreground="#FF8A7466"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding textboxitem.ImagePath}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding textboxitem.ImagePath}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
                         </Grid>
                     </Border>
 
-                    <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="15">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <TextBlock Text="Product Details" FontSize="20" FontWeight="Bold" Foreground="#FF4A2E1E" Margin="0,0,0,15"/>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Product Name:" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <TextBox Text="{Binding textboxitem.ProductName, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="6"/>
+                        <Button Grid.Column="0"
+                                Content="ADD NEW"
+                                Margin="0,0,8,0"
+                                Background="#FF8A5536"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding AddCommand}"/>
+                        <Button Grid.Column="1"
+                                Content="ADD TYPE"
+                                Margin="8,0,0,0"
+                                Background="#FFB0713D"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding AddTypeCommand}"/>
+                    </Grid>
 
-                                <TextBlock Text="Volume (Type):" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <TextBox Text="{Binding textboxitem.Volume, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="6"/>
+                    <Grid Margin="0,0,0,18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Price:" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <TextBox Text="{Binding textboxitem.Price, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,10" Padding="6"/>
+                        <Button Grid.Column="0"
+                                Content="UPDATE"
+                                Margin="0,0,8,0"
+                                Background="#FF6F4D3B"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding UpdateCommand}"/>
+                        <Button Grid.Column="1"
+                                Content="HIDE / UNHIDE"
+                                Margin="8,0,8,0"
+                                Background="#FFC27D44"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding DeleteCommand}"/>
+                        <Button Grid.Column="2"
+                                Content="CLEAR"
+                                Margin="8,0,0,0"
+                                Background="#FF6C7A87"
+                                Style="{StaticResource RoundedButtonStyle}"
+                                Command="{Binding ClearCommand}"/>
+                    </Grid>
 
-                                <TextBlock Text="Category:" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <ComboBox ItemsSource="{Binding CategoriesList}" 
-                                          DisplayMemberPath="CategoryName" 
-                                          SelectedValuePath="CategoryId" 
-                                          SelectedValue="{Binding textboxitem.CategoryId, UpdateSourceTrigger=PropertyChanged}" 
-                                          Margin="0,5,0,10" Padding="6" Background="White"/>
-
-                                <TextBlock Text="Brand:" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <ComboBox ItemsSource="{Binding BrandsList}" 
-                                          DisplayMemberPath="BrandName" 
-                                          SelectedValuePath="BrandId" 
-                                          SelectedValue="{Binding textboxitem.BrandId, UpdateSourceTrigger=PropertyChanged}" 
-                                          Margin="0,5,0,10" Padding="6" Background="White"/>
-
-                                <TextBlock Text="Image:" FontWeight="Bold" Foreground="#FF6F5547"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
-                                    <Button Content="Browse..." Command="{Binding ChooseImageCommand}" Width="75" Padding="5" Background="#FFB96D4A" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                    <TextBlock Text="{Binding textboxitem.ImagePath}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Width="140" Margin="10,0,0,0" Foreground="#FF6F5547"/>
-                                </StackPanel>
-                                <Image Source="{Binding textboxitem.ImagePath}" Height="100" Stretch="Uniform" Margin="0,0,0,20" HorizontalAlignment="Left"/>
-
-                                <WrapPanel HorizontalAlignment="Center">
-                                    <Button Content="Add New" Command="{Binding AddCommand}" Width="80" Margin="5" Padding="6" Background="#FF6B4736" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                    <Button Content="Add Type" Command="{Binding AddTypeCommand}" Width="80" Margin="5" Padding="6" Background="#FFB96D4A" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                    <Button Content="Update" Command="{Binding UpdateCommand}" Width="80" Margin="5" Padding="6" Background="#FF6B4736" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                    <Button Content="Hide/Un" Command="{Binding DeleteCommand}" Width="80" Margin="5" Padding="6" Background="#FFB96D4A" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                    <Button Content="Clear" Command="{Binding ClearCommand}" Width="80" Margin="5" Padding="6" Background="#FF8C7A6B" Foreground="White" BorderThickness="0" Cursor="Hand"/>
-                                </WrapPanel>
-                            </StackPanel>
-                        </ScrollViewer>
+                    <Border Background="#FFF8EEE7"
+                            BorderBrush="#FFE3CFC0"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="Quick Note"
+                                       FontWeight="Bold"
+                                       Foreground="#FF5C463A"/>
+                            <TextBlock Text="Use Add New for a new product, Add Type for another variant of the selected product, and Hide / Unhide to toggle visibility."
+                                       Margin="0,8,0,0"
+                                       Foreground="#FF7A6254"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
                     </Border>
-                </Grid>
-            </Grid>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
     </Grid>
 </Page>
