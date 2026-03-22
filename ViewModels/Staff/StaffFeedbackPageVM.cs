@@ -10,7 +10,7 @@ using CosmeticStoreManagement.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace CosmeticStoreManagement.ViewModels;
+namespace CosmeticStoreManagement.ViewModels.Staff;
 
 public class StaffFeedbackOrderItem : BaseViewModel
 {

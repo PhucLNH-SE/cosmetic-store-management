@@ -1,8 +1,9 @@
 using System.Windows;
 using CosmeticStoreManagement.Helpers;
-using CosmeticStoreManagement.Views.Admin;
+using CosmeticStoreManagement.Views;
 
-namespace CosmeticStoreManagement.Views;
+
+namespace CosmeticStoreManagement.Views.Admin;
 
 public partial class ManagerWindow : Window
 {

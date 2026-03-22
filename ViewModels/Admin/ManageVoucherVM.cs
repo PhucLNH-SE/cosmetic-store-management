@@ -1,4 +1,4 @@
-﻿using CosmeticStoreManagement.Data;
+using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
-namespace CosmeticStoreManagement.ViewModels
+namespace CosmeticStoreManagement.ViewModels.Admin
 {
     public class ManageVoucherVM : BaseViewModel
     {

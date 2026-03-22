@@ -1,4 +1,4 @@
-using CosmeticStoreManagement.ViewModels;
+using CosmeticStoreManagement.ViewModels.Admin;
 using System.Windows.Controls;
 
 namespace CosmeticStoreManagement.Views.Admin;

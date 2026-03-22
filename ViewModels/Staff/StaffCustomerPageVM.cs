@@ -6,7 +6,7 @@ using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
 
-namespace CosmeticStoreManagement.ViewModels;
+namespace CosmeticStoreManagement.ViewModels.Staff;
 
 public class StaffCustomerPageVM : BaseViewModel
 {

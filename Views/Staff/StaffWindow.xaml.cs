@@ -1,8 +1,9 @@
 using System.Windows;
 using CosmeticStoreManagement.Helpers;
-using CosmeticStoreManagement.Views.Pages;
+using CosmeticStoreManagement.Views;
 
-namespace CosmeticStoreManagement.Views;
+
+namespace CosmeticStoreManagement.Views.Staff;
 
 public partial class StaffWindow : Window
 {

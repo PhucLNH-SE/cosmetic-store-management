@@ -9,7 +9,7 @@ using CosmeticStoreManagement.Helpers;
 using CosmeticStoreManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmeticStoreManagement.ViewModels;
+namespace CosmeticStoreManagement.ViewModels.Staff;
 
 public class StaffSalesPageVM : BaseViewModel
 {

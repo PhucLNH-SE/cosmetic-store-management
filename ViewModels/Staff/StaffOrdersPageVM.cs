@@ -7,7 +7,7 @@ using CosmeticStoreManagement.Data;
 using CosmeticStoreManagement.Helpers;
 using Microsoft.EntityFrameworkCore;
 
-namespace CosmeticStoreManagement.ViewModels;
+namespace CosmeticStoreManagement.ViewModels.Staff;
 
 public class StaffOrderLineItem
 {
