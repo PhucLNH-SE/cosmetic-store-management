@@ -155,7 +155,11 @@ public class StaffProductPageVM : BaseViewModel
         ProductsView = CollectionViewSource.GetDefaultView(Products);
         ProductsView.Filter = FilterPredicate;
 
-        RefreshCommand = new RelayCommand(_ => LoadData());
+        RefreshCommand = new RelayCommand(_ =>
+        {
+            ClearFilters();
+            LoadData();
+        });
         ClearFiltersCommand = new RelayCommand(_ => ClearFilters());
 
         LoadData();
