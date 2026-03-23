@@ -46,8 +46,6 @@ public class StaffProductPageVM : BaseViewModel
 
     public List<string> SortOptions { get; } = new()
     {
-        "ID: Low to High",
-        "ID: High to Low",
         "Price: Low to High",
         "Price: High to Low",
         "Name: A to Z",
@@ -235,7 +233,6 @@ public class StaffProductPageVM : BaseViewModel
                     : minPrice == maxPrice
                         ? $"{minPrice:N0} VND"
                         : $"{minPrice:N0} - {maxPrice:N0} VND";
-
                 Products.Add(new StaffProductItem
                 {
                     ProductId = product.ProductId,
@@ -299,9 +296,6 @@ public class StaffProductPageVM : BaseViewModel
 
         switch (SelectedSort)
         {
-            case "ID: High to Low":
-                ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.ProductId), ListSortDirection.Descending));
-                break;
             case "Price: Low to High":
                 ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.MinPrice), ListSortDirection.Ascending));
                 ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.ProductId), ListSortDirection.Ascending));
@@ -318,7 +312,6 @@ public class StaffProductPageVM : BaseViewModel
                 ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.ProductName), ListSortDirection.Descending));
                 ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.ProductId), ListSortDirection.Descending));
                 break;
-            case "ID: Low to High":
             default:
                 ProductsView.SortDescriptions.Add(new SortDescription(nameof(StaffProductItem.ProductId), ListSortDirection.Ascending));
                 break;

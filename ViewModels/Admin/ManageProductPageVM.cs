@@ -283,6 +283,10 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         private void AddProduct()
         {
+            if (!ValidateProductInput(requireProductName: true, requireVolume: true, requirePrice: true))
+            {
+                return;
+            }
             if (textboxitem.CategoryId == 0 || textboxitem.BrandId == 0)
             {
                 MessageBox.Show("Vui lòng ch?n Danh m?c và Thuong hi?u!", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -346,6 +350,10 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         private void AddOnlyVariant()
         {
+            if (!ValidateProductInput(requireProductName: false, requireVolume: true, requirePrice: true))
+            {
+                return;
+            }
             using (var context = new AppDbContext())
             {
                 string normalizedVolume = textboxitem.Volume?.Trim().ToLower() ?? string.Empty;
@@ -391,6 +399,10 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         private void UpdateProduct()
         {
+            if (!ValidateProductInput(requireProductName: true, requireVolume: true, requirePrice: true))
+            {
+                return;
+            }
             using (var context = new AppDbContext())
             {
                 var p = context.Products.Find(textboxitem.ProductId);
@@ -446,6 +458,45 @@ namespace CosmeticStoreManagement.ViewModels.Admin
             }
         }
 
+        private bool ValidateProductInput(bool requireProductName, bool requireVolume, bool requirePrice)
+        {
+            var name = textboxitem.ProductName?.Trim() ?? string.Empty;
+            var volume = textboxitem.Volume?.Trim() ?? string.Empty;
+
+            if (requireProductName && string.IsNullOrWhiteSpace(name))
+            {
+                MessageBox.Show("Tên s?n ph?m không du?c d? tr?ng!", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (name.Length > 150)
+            {
+                MessageBox.Show("Tên s?n ph?m không du?c quá 150 ký t?", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (requireVolume && string.IsNullOrWhiteSpace(volume))
+            {
+                MessageBox.Show("Dung tích/lo?i s?n ph?m không du?c d? tr?ng!", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (volume.Length > 50)
+            {
+                MessageBox.Show("Dung tích/lo?i s?n ph?m không du?c quá 50 ký t?", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (requirePrice && textboxitem.Price <= 0)
+            {
+                MessageBox.Show("Giá s?n ph?m ph?i l?n hon 0!", "Thi?u thông tin", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+
         private void ToggleProductStatus()
         {
             using (var context = new AppDbContext())
@@ -462,3 +513,5 @@ namespace CosmeticStoreManagement.ViewModels.Admin
         }
     }
 }
+
+

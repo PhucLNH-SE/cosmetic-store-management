@@ -106,28 +106,62 @@ public class ManageStaffPageVM : BaseViewModel
 
     private bool IsValidForm(bool isUpdate)
     {
-        if (string.IsNullOrWhiteSpace(textboxitem.Username))
+        var username = textboxitem.Username?.Trim() ?? string.Empty;
+        var password = textboxitem.Password ?? string.Empty;
+        var fullName = textboxitem.FullName?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(username))
         {
             errormessage = "Username is required.";
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(textboxitem.Password))
+        if (username.Length > 50)
+        {
+            errormessage = "Username must be 50 characters or less.";
+            return false;
+        }
+
+        if (username.Any(char.IsWhiteSpace))
+        {
+            errormessage = "Username must not contain spaces.";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(password))
         {
             errormessage = "Password is required.";
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(textboxitem.FullName))
+        if (password.Length < 6)
+        {
+            errormessage = "Password must be at least 6 characters.";
+            return false;
+        }
+
+        if (password.Length > 255)
+        {
+            errormessage = "Password must be 255 characters or less.";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(fullName))
         {
             errormessage = "Full name is required.";
             return false;
         }
 
+        if (fullName.Length > 100)
+        {
+            errormessage = "Full name must be 100 characters or less.";
+            return false;
+        }
+
         using var context = new AppDbContext();
         bool duplicatedUsername = isUpdate
-            ? context.Users.Any(x => x.Username == textboxitem.Username && x.UserId != textboxitem.UserId)
-            : context.Users.Any(x => x.Username == textboxitem.Username);
+            ? context.Users.Any(x => x.Username == username && x.UserId != textboxitem.UserId)
+            : context.Users.Any(x => x.Username == username);
 
         if (duplicatedUsername)
         {

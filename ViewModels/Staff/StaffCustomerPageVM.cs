@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.Windows.Input;
 using CosmeticStoreManagement.Data;
@@ -232,15 +233,98 @@ public class StaffCustomerPageVM : BaseViewModel
 
     private bool ValidateCustomerInput()
     {
+        if (!ValidateCustomerName(textboxitem.CustomerName))
+        {
+            return false;
+        }
+
+        if (!ValidatePhone(textboxitem.Phone))
+        {
+            return false;
+        }
+
+        if (!ValidateEmail(textboxitem.Email))
+        {
+            return false;
+        }
+
+        if (!ValidateAddress(textboxitem.Address))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ValidateCustomerName(string? name)
+    {
         if (string.IsNullOrWhiteSpace(textboxitem.CustomerName))
         {
             statusmessage = "Customer name is required.";
             return false;
         }
 
+        if ((name ?? string.Empty).Trim().Length > 100)
+        {
+            statusmessage = "Customer name must be 100 characters or less.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ValidatePhone(string? phone)
+    {
         if (string.IsNullOrWhiteSpace(textboxitem.Phone))
         {
             statusmessage = "Phone number is required.";
+            return false;
+        }
+
+        var normalized = (phone ?? string.Empty).Trim();
+        if (!Regex.IsMatch(normalized, "^\\d{10,11}$"))
+        {
+            statusmessage = "Phone number must contain 10-11 digits.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ValidateEmail(string? email)
+    {
+        var normalized = (email ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            return true;
+        }
+
+        if (normalized.Length > 100)
+        {
+            statusmessage = "Email must be 100 characters or less.";
+            return false;
+        }
+
+        if (!Regex.IsMatch(normalized, "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"))
+        {
+            statusmessage = "Email format is invalid.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ValidateAddress(string? address)
+    {
+        var normalized = (address ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            return true;
+        }
+
+        if (normalized.Length > 255)
+        {
+            statusmessage = "Address must be 255 characters or less.";
             return false;
         }
 

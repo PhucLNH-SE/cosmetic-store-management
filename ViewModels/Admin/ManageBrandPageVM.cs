@@ -110,9 +110,8 @@ public class ManageBrandPageVM : BaseViewModel
 
     private void Add(object? parameter)
     {
-        if (string.IsNullOrWhiteSpace(textboxitem.BrandName))
+        if (!ValidateBrandInput())
         {
-            statusmessage = "Brand name is required.";
             return;
         }
 
@@ -153,9 +152,8 @@ public class ManageBrandPageVM : BaseViewModel
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(textboxitem.BrandName))
+        if (!ValidateBrandInput())
         {
-            statusmessage = "Brand name is required.";
             return;
         }
 
@@ -266,6 +264,32 @@ public class ManageBrandPageVM : BaseViewModel
     {
         var normalized = (value ?? string.Empty).Trim();
         return string.IsNullOrWhiteSpace(normalized) ? null : normalized;
+    }
+
+    private bool ValidateBrandInput()
+    {
+        var name = textboxitem.BrandName?.Trim() ?? string.Empty;
+        var country = NormalizeString(textboxitem.Country);
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            statusmessage = "Brand name is required.";
+            return false;
+        }
+
+        if (name.Length > 100)
+        {
+            statusmessage = "Brand name must be 100 characters or less.";
+            return false;
+        }
+
+        if (country != null && country.Length > 100)
+        {
+            statusmessage = "Country must be 100 characters or less.";
+            return false;
+        }
+
+        return true;
     }
 }
 
