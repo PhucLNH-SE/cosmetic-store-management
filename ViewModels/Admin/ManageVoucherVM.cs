@@ -194,13 +194,23 @@ namespace CosmeticStoreManagement.ViewModels.Admin
 
         bool ValidateVoucher()
         {
-            if (string.IsNullOrWhiteSpace(textboxitem.VoucherCode))
+            var code = (textboxitem.VoucherCode ?? string.Empty).Trim();
+
+            if (string.IsNullOrWhiteSpace(code))
             {
                 MessageBox.Show("Voucher code is required.");
                 return false;
             }
 
-            if (context.Vouchers.Any(v => v.VoucherCode == textboxitem.VoucherCode
+            if (code.Length > 50)
+            {
+                MessageBox.Show("Voucher code must be 50 characters or less.");
+                return false;
+            }
+
+            textboxitem.VoucherCode = code;
+
+            if (context.Vouchers.Any(v => v.VoucherCode == code
                 && v.VoucherId != textboxitem.VoucherId))
             {
                 MessageBox.Show("Voucher code already exists.");
@@ -210,6 +220,12 @@ namespace CosmeticStoreManagement.ViewModels.Admin
             if (textboxitem.DiscountValue <= 0)
             {
                 MessageBox.Show("Discount value must be positive.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(textboxitem.DiscountType))
+            {
+                MessageBox.Show("Discount type is required.");
                 return false;
             }
 

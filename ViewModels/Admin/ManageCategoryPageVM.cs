@@ -110,9 +110,8 @@ public class ManageCategoryPageVM : BaseViewModel
 
     private void Add(object? parameter)
     {
-        if (string.IsNullOrWhiteSpace(textboxitem.CategoryName))
+        if (!ValidateCategoryInput())
         {
-            statusmessage = "Category name is required.";
             return;
         }
 
@@ -151,9 +150,8 @@ public class ManageCategoryPageVM : BaseViewModel
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(textboxitem.CategoryName))
+        if (!ValidateCategoryInput())
         {
-            statusmessage = "Category name is required.";
             return;
         }
 
@@ -255,6 +253,25 @@ public class ManageCategoryPageVM : BaseViewModel
         };
 
         CategoryView.Refresh();
+    }
+
+    private bool ValidateCategoryInput()
+    {
+        var name = textboxitem.CategoryName?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            statusmessage = "Category name is required.";
+            return false;
+        }
+
+        if (name.Length > 100)
+        {
+            statusmessage = "Category name must be 100 characters or less.";
+            return false;
+        }
+
+        return true;
     }
 }
 
